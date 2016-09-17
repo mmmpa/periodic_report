@@ -218,6 +218,7 @@ GEM
       capybara (~> 2.1)
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
+    posix-spawn (0.3.11)
     powerpack (0.1.1)
     procto (0.0.3)
     pry (0.10.4)
@@ -230,6 +231,9 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     puma (3.6.0)
+    pygments.rb (0.6.3)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.2.0)
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -270,6 +274,7 @@ GEM
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
     redcard (1.1.0)
+    redcarpet (3.3.4)
     reek (2.2.1)
       parser (~> 2.2)
       rainbow (~> 2.0)
@@ -315,6 +320,13 @@ GEM
     ruby-progressbar (1.8.1)
     ruby_parser (3.8.2)
       sexp_processor (~> 4.1)
+    sass (3.4.22)
+    sass-rails (5.0.6)
+      railties (>= 4.0.0, < 6)
+      sass (~> 3.1)
+      sprockets (>= 2.8, < 4.0)
+      sprockets-rails (>= 2.0, < 4.0)
+      tilt (>= 1.1, < 3)
     scrypt (3.0.3)
       ffi-compiler (>= 1.0.0)
       rake
@@ -384,6 +396,7 @@ GEM
     websocket-extensions (0.1.2)
     xpath (2.0.0)
       nokogiri (~> 1.3)
+    yajl-ruby (1.2.1)
 
 PLATFORMS
   ruby
@@ -413,12 +426,15 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma (~> 3.0)
+  pygments.rb
   rails (~> 5.0.0, >= 5.0.0.1)
   rails_best_practices
+  redcarpet
   rspec
   rspec-html-matchers
   rspec-rails
   rubocop
+  sass-rails (~> 5.0)
   simplecov
   simplecov-rcov
   slim-rails

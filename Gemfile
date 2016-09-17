@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.0'
+gem 'sass-rails', '~> 5.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -33,6 +34,8 @@ group :default do
   gem 'brakeman', require: false
   gem 'rubocop', require: false
   gem 'metric_fu', require: false
+  gem 'redcarpet'
+  gem "pygments.rb"
 end
 
 group :development, :test do

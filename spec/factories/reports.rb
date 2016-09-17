@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :report do
-    name "MyString"
-    user nil
+    name { SecureRandom.hex(4) }
+    user { User.first || create(:user) }
   end
 end

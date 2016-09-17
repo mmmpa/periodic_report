@@ -1,9 +1,8 @@
 FactoryGirl.define do
   factory :user do
-    user nil
-    name "MyString"
-    provider "MyString"
-    uid "MyText"
-    oauth_token "MyString"
+    name { SecureRandom.hex(4) }
+    provider { SecureRandom.hex(4) }
+    uid { SecureRandom.hex(4) }
+    oauth_token { SecureRandom.hex(4) }
   end
 end
