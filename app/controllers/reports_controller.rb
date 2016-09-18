@@ -16,7 +16,7 @@ class ReportsController < ApplicationController
   end
 
   def create
-    newer = Report.create!(report_params)
+    newer = report_group.reports.create!(report_params)
     redirect_to edit_report_path(report_id: newer.id)
   rescue ActiveRecord::RecordInvalid => e
     @report = e.record

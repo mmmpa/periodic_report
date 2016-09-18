@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
   end
 
   def report
-    Report.find(params[:report_id])
+    report_group.reports.find(params[:report_id])
+  end
+
+  def report_group
+    ReportGroup.find(params[:report_group_id])
   end
 end
