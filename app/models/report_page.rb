@@ -1,8 +1,7 @@
 class ReportPage < ApplicationRecord
   belongs_to :report, inverse_of: :report_pages
-  has_many :report_page_chips, inverse_of: :report_page
-
-  after_save :save_report_page_chips!
+  has_many :report_page_chips, ->{order(report_item_id: :asc)}, inverse_of: :report_page
+  has_many :report_items, through: :report
 
   class << self
     def compare_and_create!(page, attributes)
@@ -19,20 +18,28 @@ class ReportPage < ApplicationRecord
   end
 
   def ==(page)
-    return true if page.nil?
+    return false if page.nil?
     self.raw == page.raw
   end
 
-  def raw=(value)
-    report_page_chips.build(raw: value)
-  end
+  def raw=(values)
+    if String === values
+      return report_page_chips.build(raw: values, report_item_id: report_items.first.id)
+    end
 
-  def save_report_page_chips!
-    report_page_chips.each(&:save!)
+    ids = report_items.ids
+    Array(values).each do |value|
+      next unless ids.include?(value[:item_id])
+      report_page_chips.build(raw: value[:raw], report_item_id: value[:item_id])
+    end
   end
 
   def raw
-    report_page_chips.pluck(:raw).join
+    report_page_chips.map(&:raw).join
+  end
+
+  def html
+    report_page_chips.map(&:html).join
   end
 
   def save

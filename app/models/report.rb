@@ -1,11 +1,14 @@
 class Report < ApplicationRecord
   belongs_to :user
+  belongs_to :report_group, inverse_of: :reports
+
+  has_many :report_items, through: :report_group
   has_many :report_pages, -> { order(created_at: :desc) }, inverse_of: :report, dependent: :destroy
   has_many :periods, inverse_of: :report, dependent: :destroy
   has_many :periodic_report_pages, -> { order(created_at: :desc) },
            class_name: ReportPage, through: :periods, source: :report_page
 
-  validates :name, presence: true
+  validates :name, :report_group, presence: true
 
   class << self
     def differ
@@ -14,8 +17,7 @@ class Report < ApplicationRecord
   end
 
   def update_body(attributes)
-    attributes.merge!(report: self)
-    ReportPage.compare_and_create!(body, attributes)
+    ReportPage.compare_and_create!(body, {report: self}.merge!(attributes))
   end
 
   def body

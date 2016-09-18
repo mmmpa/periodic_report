@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160918065434) do
+ActiveRecord::Schema.define(version: 20160918095304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,13 +31,22 @@ ActiveRecord::Schema.define(version: 20160918065434) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "report_items", force: :cascade do |t|
+    t.string   "name",            default: "", null: false
+    t.integer  "report_group_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["report_group_id"], name: "index_report_items_on_report_group_id", using: :btree
+  end
+
   create_table "report_page_chips", force: :cascade do |t|
     t.integer  "report_page_id"
-    t.string   "name",           default: "", null: false
+    t.integer  "report_item_id"
     t.text     "raw",            default: "", null: false
     t.text     "html",           default: "", null: false
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
+    t.index ["report_item_id"], name: "index_report_page_chips_on_report_item_id", using: :btree
     t.index ["report_page_id"], name: "index_report_page_chips_on_report_page_id", using: :btree
   end
 
@@ -50,9 +59,11 @@ ActiveRecord::Schema.define(version: 20160918065434) do
 
   create_table "reports", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "name",       default: "", null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "report_group_id"
+    t.string   "name",            default: "", null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["report_group_id"], name: "index_reports_on_report_group_id", using: :btree
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
@@ -65,5 +76,4 @@ ActiveRecord::Schema.define(version: 20160918065434) do
     t.datetime "updated_at",  null: false
   end
 
-  add_foreign_key "report_page_chips", "report_pages"
 end

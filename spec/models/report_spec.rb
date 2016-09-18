@@ -30,13 +30,40 @@ RSpec.describe Report, type: :model do
       }.to change(report.report_pages, :count).by(1)
     end
 
-    it 'not update with same attributes' do
-      report = create(:report)
-      report.update_body(raw: 'test')
-
-      expect {
+    describe 'not update with same attributes' do
+      it do
+        report = create(:report)
         report.update_body(raw: 'test')
-      }.to change(report.report_pages, :count).by(0)
+
+        expect {
+          report.update_body(raw: 'test')
+        }.to change(report.report_pages, :count).by(0)
+      end
+
+
+      it do
+        report = create(:report, report_group: create(:report_group, report_items: [
+          build(:report_item),
+          build(:report_item),
+        ]))
+
+        ids = report.report_items.ids
+
+        report.update_body(raw: [
+          {item_id: ids.first, raw: 'text1'},
+          {item_id: ids.second, raw: 'text2'},
+        ])
+
+        report.reload
+        report.put_period
+
+        expect {
+          report.update_body(raw: [
+            {item_id: ids.first, raw: 'text1'},
+            {item_id: ids.second, raw: 'text2'},
+          ])
+        }.to change(report.report_pages, :count).by(0)
+      end
     end
   end
 
