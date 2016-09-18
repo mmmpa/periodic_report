@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  before_action :authorize_or_redirect
+
+  # before_action :authorize_or_redirect
   layout 'portal'
 
   private
@@ -19,6 +20,6 @@ class ApplicationController < ActionController::Base
   end
 
   def report
-    Report.find(:report_id)
+    Report.find(params[:report_id])
   end
 end

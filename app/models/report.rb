@@ -7,18 +7,34 @@ class Report < ApplicationRecord
 
   validates :name, presence: true
 
-  # report では泣く report_page を更新する
-  # report_page は update されず、常に create される。
+  class << self
+    def differ
+      @differ ||= Markdiff::Differ.new
+    end
+  end
+
   def update_body(attributes)
     attributes.merge!(report: self)
     ReportPage.compare_and_create!(body, attributes)
   end
 
   def body
-    report_pages.first
+    report_pages.first || report_pages.build
+  end
+
+  def previous_body
+    periodic_report_pages.first || report_pages.second || report_pages.build
   end
 
   def put_period
     periods.create!(report_page: report_pages.first)
+  end
+
+  def diff(base = previous_body.html)
+    self.class.differ.render(base, body.html).to_html
+  end
+
+  def diff_by_id(id = previous_body.id)
+    diff(report_pages.find(id).html)
   end
 end

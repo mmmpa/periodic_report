@@ -8,26 +8,27 @@ class ReportsController < ApplicationController
   end
 
   def new
-    @record = Report.new
+    @report = Report.new
   end
 
   def edit
-    @record = report
+    @report = report
   end
 
   def create
-    newer = Report.create!(params)
-    redirect_to report_path(newer)
+    :create
+    newer = Report.create!(report_params)
+    redirect_to edit_report_path(newer)
   rescue ActiveRecord::RecordInvalid => e
-    @record = e.record
+    @report = e.record
     render :new
   end
 
   def update
-    report.update!(params)
-    redirect_to report_path(report)
+    report.update!(report_params)
+    redirect_to edit_report_path(report)
   rescue ActiveRecord::RecordInvalid => e
-    @record = e.record
+    @report = e.record
     render :edit
   end
 
@@ -38,7 +39,7 @@ class ReportsController < ApplicationController
 
   private
 
-  def params
+  def report_params
     params.require(:report).permit(:name)
   end
 end

@@ -23,6 +23,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :default do
+  gem 'markdiff'
   gem 'omniauth'
   gem 'omniauth-github'
   gem 'authlogic'

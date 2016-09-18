@@ -1,2 +1,5 @@
-h1 Report#index
-p Find me in app/views/report/index.html.slim
+ul
+  - @reports.each do |report|
+    li
+      = link_to report.name, report_path(report)
+      = link_to :edit, edit_report_path(report)

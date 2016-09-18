@@ -10,16 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160917184747) do
+ActiveRecord::Schema.define(version: 20160918035034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "period_types", force: :cascade do |t|
+    t.string   "name",                     null: false
+    t.string   "timing",     default: "0"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "periodics", force: :cascade do |t|
+    t.integer  "report_id"
+    t.integer  "period_type_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["period_type_id"], name: "index_periodics_on_period_type_id", using: :btree
+    t.index ["report_id"], name: "index_periodics_on_report_id", using: :btree
+  end
+
   create_table "periods", force: :cascade do |t|
     t.integer  "report_id"
     t.integer  "report_page_id"
+    t.integer  "period_type_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.index ["period_type_id"], name: "index_periods_on_period_type_id", using: :btree
     t.index ["report_id"], name: "index_periods_on_report_id", using: :btree
     t.index ["report_page_id"], name: "index_periods_on_report_page_id", using: :btree
   end

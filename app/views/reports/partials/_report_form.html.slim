@@ -1,0 +1,6 @@
+= form_for report, url: detect_path(report) ,method: detect_method do |f|
+  = report.errors.full_messages
+  .label name
+  .input = f.text_field :name
+
+  = f.submit action_name

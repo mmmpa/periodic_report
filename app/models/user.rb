@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  belongs_to :user
 
   def self.create_with_omniauth(auth)
     create! do |user|

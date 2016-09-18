@@ -45,11 +45,12 @@ RSpec.describe Report, type: :model do
       report = create(:report)
       report.update_body(raw: 'test1')
       periodic = report.update_body(raw: 'test2')
+      report.reload
       report.put_period
       report.update_body(raw: 'test3')
 
+      report.periodic_report_pages.reload
       expect(report.periodic_report_pages.first).to eq(periodic)
     end
   end
-
 end
