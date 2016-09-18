@@ -6,6 +6,7 @@ class Report < ApplicationRecord
            class_name: ReportPage, through: :periods, source: :report_page
 
   validates :name, presence: true
+  validate :validate_timing
 
   class << self
     def differ

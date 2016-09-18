@@ -3,7 +3,6 @@ class CreatePeriods < ActiveRecord::Migration[5.0]
     create_table :periods do |t|
       t.references :report, foreign_key: false
       t.references :report_page, foreign_key: false
-      t.references :period_type, foreign_key: false
 
       t.timestamps
     end

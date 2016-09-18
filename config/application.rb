@@ -6,9 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module PeriodicReport
+module PeriodicReporter
   class Application < Rails::Application
-    
+
     config.active_record.raise_in_transactional_callbacks = true
     config.time_zone = 'Tokyo'
 
@@ -46,7 +46,7 @@ module PeriodicReport
       authentication: :plain,
       enable_starttls_auto: true
     }
-  
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
