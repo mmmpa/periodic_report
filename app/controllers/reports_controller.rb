@@ -16,9 +16,8 @@ class ReportsController < ApplicationController
   end
 
   def create
-    :create
     newer = Report.create!(report_params)
-    redirect_to edit_report_path(newer)
+    redirect_to edit_report_path(report_id: newer.id)
   rescue ActiveRecord::RecordInvalid => e
     @report = e.record
     render :new
@@ -26,7 +25,7 @@ class ReportsController < ApplicationController
 
   def update
     report.update!(report_params)
-    redirect_to edit_report_path(report)
+    redirect_to edit_report_path(report_id: report.id)
   rescue ActiveRecord::RecordInvalid => e
     @report = e.record
     render :edit

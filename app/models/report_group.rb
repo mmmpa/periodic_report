@@ -1,12 +1,15 @@
 class ReportGroup < ApplicationRecord
   DAY_OF_WEEK = [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday]
 
+  validates :name, presence: true
+  validate :validate_timing
+
   def validate_timing
     errors.add(:timing, :invalid) if !day_of_week? && !day?
   end
 
   def day_of_week?
-    DAY_OF_WEEK.include?(timing.to_sym)
+    DAY_OF_WEEK.include?(timing.to_s.to_sym)
   end
 
   def day?

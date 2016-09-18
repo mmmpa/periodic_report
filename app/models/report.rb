@@ -6,7 +6,6 @@ class Report < ApplicationRecord
            class_name: ReportPage, through: :periods, source: :report_page
 
   validates :name, presence: true
-  validate :validate_timing
 
   class << self
     def differ
@@ -36,6 +35,6 @@ class Report < ApplicationRecord
   end
 
   def diff_by_id(id = previous_body.id)
-    diff(report_pages.find(id).html)
+    diff(report_pages.find_by(id: id).try(:html))
   end
 end

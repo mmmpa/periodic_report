@@ -1,11 +1,8 @@
 class ReportPage < ApplicationRecord
-  include MarkdownRenderer
-
   belongs_to :report, inverse_of: :report_pages
+  has_many :report_page_chips, inverse_of: :report_page
 
-  validates :raw, :html, :report, presence: true
-
-  before_validation -> { render_as_markdown! }
+  after_save :save_report_page_chips!
 
   class << self
     def compare_and_create!(page, attributes)
@@ -13,7 +10,7 @@ class ReportPage < ApplicationRecord
 
       new_page = new(attributes)
 
-      if new_page.same?(page)
+      if new_page == page
         page
       else
         new_page.tap { |n| n.save! }
@@ -21,8 +18,21 @@ class ReportPage < ApplicationRecord
     end
   end
 
-  def same?(page)
-    raw == page.raw
+  def ==(page)
+    return true if page.nil?
+    self.raw == page.raw
+  end
+
+  def raw=(value)
+    report_page_chips.build(raw: value)
+  end
+
+  def save_report_page_chips!
+    report_page_chips.each(&:save!)
+  end
+
+  def raw
+    report_page_chips.pluck(:raw).join
   end
 
   def save

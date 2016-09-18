@@ -1,4 +1,4 @@
-= form_for report_page, url: report_page_path(report_page.report), method: detect_method do |f|
+= form_for report_page, url: report_page_path, method: detect_method do |f|
   = report_page.errors.full_messages
   .label 本文
   .input = f.text_area :raw
