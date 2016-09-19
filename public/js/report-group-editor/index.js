@@ -279,6 +279,9 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
       var items = _state.items;
       var timing = _state.timing;
 
+      items = items.filter(function (i) {
+        return !i.del;
+      });
       this.sendTargetAPI({ id: id, name: name, items: items, timing: timing }).then(function (params) {
         return _this2.takeInState(params);
       }).catch(function (failure) {
@@ -384,8 +387,22 @@ var ItemList = (_class3 = function (_React$Component2) {
       this.setState({ items: this.props.items.concat() });
     }
   }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      this.setState({ items: props.items.concat() });
+    }
+  }, {
+    key: 'generateKey',
+    value: function generateKey(id, index) {
+      if (id && id !== '') {
+        return 'id' + id;
+      } else {
+        return index;
+      }
+    }
+  }, {
     key: 'detectDeleteButton',
-    value: function detectDeleteButton(id, root, index) {
+    value: function detectDeleteButton(id, root, del, index) {
       var _this4 = this;
 
       if (root) {
@@ -397,10 +414,20 @@ var ItemList = (_class3 = function (_React$Component2) {
       }
 
       return id ? React.createElement(
-        'span',
+        'label',
         null,
-        React.createElement('input', { type: 'checkbox', value: id, onChange: this.toggleItem }),
-        ' delete on saving'
+        React.createElement(
+          'span',
+          { className: 'input-input' },
+          React.createElement('input', { type: 'checkbox', value: id, checked: del, onChange: function onChange(e) {
+              return _this4.toggleItem(index, e);
+            } })
+        ),
+        React.createElement(
+          'span',
+          { className: 'input-label' },
+          'delete on update'
+        )
       ) : React.createElement(
         'span',
         null,
@@ -414,33 +441,39 @@ var ItemList = (_class3 = function (_React$Component2) {
       );
     }
   }, {
+    key: 'inform',
+    value: function inform() {
+      this.props.onChange(this.state.items.concat());
+    }
+  }, {
     key: 'changeItem',
     value: function changeItem(index, e) {
       var items = this.state.items.concat();
       items[index].name = e.target.value;
-      this.setState({ items: items });
-
-      this.props.onChange(items);
+      console.log(items);
+      this.setState({ items: items }, this.inform);
     }
   }, {
     key: 'deleteItem',
     value: function deleteItem(index) {
       var items = this.state.items.concat();
       items.splice(index, 1);
-      this.setState({ items: items });
+      this.setState({ items: items }, this.inform);
     }
   }, {
     key: 'addItem',
     value: function addItem() {
       var items = this.state.items.concat();
-
       items.push({ id: '', name: '' });
-
-      this.setState({ items: items });
+      this.setState({ items: items }, this.inform);
     }
   }, {
     key: 'toggleItem',
-    value: function toggleItem(e) {}
+    value: function toggleItem(index, e) {
+      var items = this.state.items.concat();
+      items[index].del = e.target.checked;
+      this.setState({ items: items }, this.inform);
+    }
   }, {
     key: 'itemMove',
     value: function itemMove(index, direction) {}
@@ -481,10 +514,11 @@ var ItemList = (_class3 = function (_React$Component2) {
           var id = _ref.id;
           var name = _ref.name;
           var root = _ref.root;
+          var del = _ref.del;
 
           return React.createElement(
             'li',
-            { className: 'report-item' },
+            { className: 'report-item', key: _this5.generateKey(id, index) },
             React.createElement(
               'div',
               { className: 'control' },
@@ -506,14 +540,15 @@ var ItemList = (_class3 = function (_React$Component2) {
             React.createElement(
               'div',
               { className: 'input' },
-              React.createElement('input', { type: 'text', className: 'report-item-name', value: name, onChange: function onChange(e) {
+              React.createElement('input', { type: 'text', className: 'report-item-name', value: name, placeholder: 'no name',
+                onChange: function onChange(e) {
                   return _this5.changeItem(index, e);
                 } })
             ),
             React.createElement(
               'div',
               { className: 'delete' },
-              _this5.detectDeleteButton(id, root, index)
+              _this5.detectDeleteButton(id, root, del, index)
             )
           );
         })
@@ -522,7 +557,7 @@ var ItemList = (_class3 = function (_React$Component2) {
   }]);
 
   return ItemList;
-}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'deleteItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'deleteItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'addItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'addItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'toggleItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'toggleItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'itemMove', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'itemMove'), _class3.prototype)), _class3);
+}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'inform'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'changeItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'deleteItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'deleteItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'addItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'addItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'toggleItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'toggleItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'itemMove', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'itemMove'), _class3.prototype)), _class3);
 var TimingSelector = (_class4 = function (_React$Component3) {
   _inherits(TimingSelector, _React$Component3);
 
