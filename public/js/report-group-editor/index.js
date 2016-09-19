@@ -157,15 +157,121 @@ exports.default = {
 };
 
 },{}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Fa = function (_React$Component) {
+  _inherits(Fa, _React$Component);
+
+  function Fa() {
+    _classCallCheck(this, Fa);
+
+    return _possibleConstructorReturn(this, (Fa.__proto__ || Object.getPrototypeOf(Fa)).apply(this, arguments));
+  }
+
+  _createClass(Fa, [{
+    key: "render",
+    value: function render() {
+      var p = this.props;
+      var classes = ['fa'];
+      classes.push("fa-" + p.icon);
+      p.scale && classes.push("fa-" + p.scale + "x");
+      (p.fixedWidth === undefined || p.fixedWidth === true) && classes.push('fa-fw');
+      p.list && classes.push('fa-li');
+      p.border && classes.push('fa-border');
+      p.pull && classes.push("fa-pull-" + p.pull);
+      p.animation && classes.push("fa-" + p.animation);
+      p.rotate && classes.push("fa-rotate-" + p.rotate);
+      p.flip && classes.push("fa-flip-" + p.flip);
+
+      return React.createElement("i", { className: classes.join(' ') });
+    }
+  }]);
+
+  return Fa;
+}(React.Component);
+
+exports.default = Fa;
+
+},{}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var sender = exports.sender = function sender(klass) {
+  klass.prototype.dispatch = function (event) {
+    var _ref;
+
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return (_ref = this.context.emitter || this.emitter).emit.apply(_ref, [event].concat(args));
+  };
+};
+
+var receiver = exports.receiver = function receiver(klass) {
+  var componentWillMount = klass.prototype.componentWillMount;
+
+  klass.prototype.componentWillMount = function () {
+    var _this = this;
+
+    componentWillMount && componentWillMount.call(this);
+
+    if (!this.emitter) {
+      this.emitter = this.context.emitter || new EventEmitter();
+      this.listen(function (eventName, callback) {
+        _this.emitter.on(eventName, callback);
+      });
+    }
+  };
+
+  var getChildContext = klass.prototype.getChildContext;
+
+  klass.prototype.getChildContext = function () {
+    var base = getChildContext || this.getChildContext;
+
+    return Object.assign(base, { emitter: this.context.emitter || this.emitter });
+  };
+};
+
+},{}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var Condition = exports.Condition = {
+  Waiting: 0,
+  Submitting: 1,
+  Fail: 2,
+  Success: 3
+};
+
+},{}],7:[function(require,module,exports){
 (function(global,factory){if(typeof define === 'function' && define.amd){define(['exports'],factory);}else if(typeof exports !== 'undefined'){factory(exports);}else {var mod={exports:{}};factory(mod.exports);global.decko = mod.exports;}})(this,function(exports){'use strict';exports.__esModule = true;var EMPTY={};var HOP=Object.prototype.hasOwnProperty;var fns={memoize:function memoize(fn){var opt=arguments.length <= 1 || arguments[1] === undefined?EMPTY:arguments[1];var cache=opt.cache || {};return function(){for(var _len=arguments.length,a=Array(_len),_key=0;_key < _len;_key++) {a[_key] = arguments[_key];}var k=String(a[0]);if(opt.caseSensitive === false)k = k.toLowerCase();return HOP.call(cache,k)?cache[k]:cache[k] = fn.apply(this,a);};},debounce:function debounce(fn,opts){if(typeof opts === 'function'){var p=fn;fn = opts;opts = p;}var delay=opts && opts.delay || opts || 0,args=undefined,context=undefined,timer=undefined;return function(){for(var _len2=arguments.length,a=Array(_len2),_key2=0;_key2 < _len2;_key2++) {a[_key2] = arguments[_key2];}args = a;context = this;if(!timer)timer = setTimeout(function(){fn.apply(context,args);args = context = timer = null;},delay);};},bind:function bind(target,key,_ref){var fn=_ref.value;return {configurable:true,get:function get(){var value=fn.bind(this);Object.defineProperty(this,key,{value:value,configurable:true,writable:true});return value;}};}};var memoize=multiMethod(fns.memoize),debounce=multiMethod(fns.debounce),bind=multiMethod(function(f,c){return f.bind(c);},function(){return fns.bind;});exports.memoize = memoize;exports.debounce = debounce;exports.bind = bind;exports['default'] = {memoize:memoize,debounce:debounce,bind:bind};function multiMethod(inner,deco){deco = deco || inner.decorate || decorator(inner);var d=deco();return function(){for(var _len3=arguments.length,args=Array(_len3),_key3=0;_key3 < _len3;_key3++) {args[_key3] = arguments[_key3];}var l=args.length;return (l < 2?deco:l > 2?d:inner).apply(undefined,args);};}function decorator(fn){return function(opt){return typeof opt === 'function'?fn(opt):function(target,key,desc){desc.value = fn(desc.value,opt,target,key,desc);};};}});
 
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
-var _desc, _value, _class2, _desc2, _value2, _class3, _desc3, _value3, _class4;
+var _class2, _desc, _value, _class3, _class4, _desc2, _value2, _class5, _class6, _desc3, _value3, _class7;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _hub = require('../../lib/hub');
 
 var _api = require('../../lib//api');
 
@@ -174,6 +280,12 @@ var _reportGroup = require('../../lib//api-configuration/report-group');
 var _reportGroup2 = _interopRequireDefault(_reportGroup);
 
 var _decko = require('decko');
+
+var _fa = require('../../lib//components/fa');
+
+var _fa2 = _interopRequireDefault(_fa);
+
+var _condition = require('../../lib/models/condition');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -229,7 +341,7 @@ window.ReportGroupEditorRunner = function () {
   return _class;
 }();
 
-var ReportGroupEditor = (_class2 = function (_React$Component) {
+var ReportGroupEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_class3 = function (_React$Component) {
   _inherits(ReportGroupEditor, _React$Component);
 
   function ReportGroupEditor() {
@@ -242,6 +354,7 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       this.takeInState(this.props);
+      this.setState({ condition: _condition.Condition.Waiting });
     }
   }, {
     key: 'takeInState',
@@ -254,24 +367,31 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
       this.setState({ id: id, name: name, items: items, timing: timing });
     }
   }, {
-    key: 'changeTiming',
-    value: function changeTiming(timing) {
-      this.setState({ timing: timing });
-    }
-  }, {
-    key: 'changeItems',
-    value: function changeItems(items) {
-      this.setState({ items: items });
+    key: 'listen',
+    value: function listen(to) {
+      var _this2 = this;
+
+      to('updateItems', function (items) {
+        return _this2.setState({ items: items });
+      });
+      to('updateTiming', function (timing) {
+        return _this2.setState({ timing: timing });
+      });
+      to('changeName', function (name) {
+        return _this2.setState({ name: name });
+      });
     }
   }, {
     key: 'changeName',
     value: function changeName(e) {
-      this.setState({ name: e.target.value });
+      this.dispatch('changeName', e.target.value);
     }
   }, {
     key: 'submit',
     value: function submit() {
-      var _this2 = this;
+      var _this3 = this;
+
+      this.setState({ condition: _condition.Condition.Submitting });
 
       var _state = this.state;
       var id = _state.id;
@@ -283,9 +403,11 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
         return !i.del;
       });
       this.sendTargetAPI({ id: id, name: name, items: items, timing: timing }).then(function (params) {
-        return _this2.takeInState(params);
+        _this3.takeInState(params);
+        _this3.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {
-        return console.log('fail', failure);
+        console.log('fail', failure);
+        _this3.setState({ condition: _condition.Condition.Waiting });
       });
     }
   }, {
@@ -325,7 +447,7 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
                 { className: 'form-label' },
                 'When put in a period'
               ),
-              React.createElement(TimingSelector, { timing: timing, dayOfWeek: dayOfWeek, onChange: this.changeTiming })
+              React.createElement(TimingSelector, { timing: timing, dayOfWeek: dayOfWeek })
             )
           ),
           React.createElement(
@@ -339,7 +461,7 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
                 { className: 'form-label' },
                 'Sections in a report'
               ),
-              React.createElement(ItemList, { items: items, onChange: this.changeItems })
+              React.createElement(ItemList, { items: items })
             )
           )
         ),
@@ -358,21 +480,33 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
   }, {
     key: 'submitButton',
     get: function get() {
+      if (this.state.condition === _condition.Condition.Submitting) {
+        return React.createElement(
+          'button',
+          { className: 'submitting-button', disabled: true },
+          React.createElement(_fa2.default, { icon: 'spinner', animation: 'pulse' }),
+          'Sending...'
+        );
+      }
+
       return this.state.id ? React.createElement(
         'button',
         { className: 'submit-button', onClick: this.submit },
-        'update!'
+        React.createElement(_fa2.default, { icon: 'save' }),
+        'Update!'
       ) : React.createElement(
         'button',
         { className: 'submit-button', onClick: this.submit },
-        'create!'
+        React.createElement(_fa2.default, { icon: 'save' }),
+        'Create!'
       );
     }
   }]);
 
   return ReportGroupEditor;
-}(React.Component), (_applyDecoratedDescriptor(_class2.prototype, 'changeTiming', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeTiming'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'changeItems', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeItems'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeName'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'submit'), _class2.prototype)), _class2);
-var ItemList = (_class3 = function (_React$Component2) {
+}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeName'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'submit'), _class3.prototype)), _class3)) || _class2) || _class2;
+
+var ItemList = (0, _hub.sender)(_class4 = (_class5 = function (_React$Component2) {
   _inherits(ItemList, _React$Component2);
 
   function ItemList() {
@@ -384,7 +518,7 @@ var ItemList = (_class3 = function (_React$Component2) {
   _createClass(ItemList, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.setState({ items: this.props.items.concat() });
+      this.componentWillReceiveProps(this.props);
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -403,13 +537,13 @@ var ItemList = (_class3 = function (_React$Component2) {
   }, {
     key: 'detectDeleteButton',
     value: function detectDeleteButton(id, root, del, index) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (root) {
         return React.createElement(
           'span',
           null,
-          'required.'
+          'Required.'
         );
       }
 
@@ -420,13 +554,13 @@ var ItemList = (_class3 = function (_React$Component2) {
           'span',
           { className: 'input-input' },
           React.createElement('input', { type: 'checkbox', value: id, checked: del, onChange: function onChange(e) {
-              return _this4.toggleItem(index, e);
+              return _this5.toggleItem(index, e);
             } })
         ),
         React.createElement(
           'span',
           { className: 'input-label' },
-          'delete on update'
+          'Delete on update'
         )
       ) : React.createElement(
         'span',
@@ -434,16 +568,18 @@ var ItemList = (_class3 = function (_React$Component2) {
         React.createElement(
           'button',
           { className: 'delete-button', onClick: function onClick() {
-              return _this4.deleteItem(index);
+              return _this5.deleteItem(index);
             } },
-          'delete'
+          React.createElement(_fa2.default, { icon: 'trash' }),
+          'Remove'
         )
       );
     }
   }, {
     key: 'inform',
     value: function inform() {
-      this.props.onChange(this.state.items.concat());
+      this.dispatch('updateItems', this.state.items.concat());
+      //this.props.onChange(this.state.items.concat())
     }
   }, {
     key: 'changeItem',
@@ -487,23 +623,46 @@ var ItemList = (_class3 = function (_React$Component2) {
         React.createElement(
           'button',
           { 'class': 'add-button', onClick: this.addItem },
-          'add'
+          React.createElement(_fa2.default, { icon: 'plus-circle' }),
+          'Add a section'
         )
       );
     }
   }, {
     key: 'items',
     get: function get() {
-      var _this5 = this;
+      var _this6 = this;
 
       var items = this.state.items;
 
 
       if (items.length <= 1) {
         return React.createElement(
-          'p',
-          null,
-          'not display title on just one item.'
+          'ul',
+          { className: 'report-item-list' },
+          React.createElement(
+            'li',
+            { className: 'report-item' },
+            React.createElement(
+              'div',
+              { className: 'control' },
+              React.createElement(
+                'button',
+                { className: 'move-button up', disabled: true },
+                React.createElement(_fa2.default, { icon: 'arrow-up' })
+              ),
+              React.createElement(
+                'button',
+                { className: 'move-button down', disabled: true },
+                React.createElement(_fa2.default, { icon: 'arrow-down' })
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'input' },
+              React.createElement('input', { type: 'text', className: 'report-item-name', value: 'Not display a title on a report has just one section.', placeholder: 'no name', disabled: true })
+            )
+          )
         );
       }
 
@@ -518,23 +677,23 @@ var ItemList = (_class3 = function (_React$Component2) {
 
           return React.createElement(
             'li',
-            { className: 'report-item', key: _this5.generateKey(id, index) },
+            { className: 'report-item', key: _this6.generateKey(id, index) },
             React.createElement(
               'div',
               { className: 'control' },
               React.createElement(
                 'button',
-                { className: 'move-button', onClick: function onClick() {
-                    return _this5.itemMove(index, -1);
+                { className: 'move-button up', onClick: function onClick() {
+                    return _this6.itemMove(index, -1);
                   } },
-                'up'
+                React.createElement(_fa2.default, { icon: 'arrow-up' })
               ),
               React.createElement(
                 'button',
-                { className: 'move-button', onClick: function onClick() {
-                    return _this5.itemMove(index, +1);
+                { className: 'move-button down', onClick: function onClick() {
+                    return _this6.itemMove(index, +1);
                   } },
-                'down'
+                React.createElement(_fa2.default, { icon: 'arrow-down' })
               )
             ),
             React.createElement(
@@ -542,13 +701,13 @@ var ItemList = (_class3 = function (_React$Component2) {
               { className: 'input' },
               React.createElement('input', { type: 'text', className: 'report-item-name', value: name, placeholder: 'no name',
                 onChange: function onChange(e) {
-                  return _this5.changeItem(index, e);
+                  return _this6.changeItem(index, e);
                 } })
             ),
             React.createElement(
               'div',
               { className: 'delete' },
-              _this5.detectDeleteButton(id, root, del, index)
+              _this6.detectDeleteButton(id, root, del, index)
             )
           );
         })
@@ -557,8 +716,9 @@ var ItemList = (_class3 = function (_React$Component2) {
   }]);
 
   return ItemList;
-}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'inform'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'changeItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'deleteItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'deleteItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'addItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'addItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'toggleItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'toggleItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'itemMove', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'itemMove'), _class3.prototype)), _class3);
-var TimingSelector = (_class4 = function (_React$Component3) {
+}(React.Component), (_applyDecoratedDescriptor(_class5.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'inform'), _class5.prototype), _applyDecoratedDescriptor(_class5.prototype, 'changeItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'changeItem'), _class5.prototype), _applyDecoratedDescriptor(_class5.prototype, 'deleteItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'deleteItem'), _class5.prototype), _applyDecoratedDescriptor(_class5.prototype, 'addItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'addItem'), _class5.prototype), _applyDecoratedDescriptor(_class5.prototype, 'toggleItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'toggleItem'), _class5.prototype), _applyDecoratedDescriptor(_class5.prototype, 'itemMove', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'itemMove'), _class5.prototype)), _class5)) || _class4;
+
+var TimingSelector = (0, _hub.sender)(_class6 = (_class7 = function (_React$Component3) {
   _inherits(TimingSelector, _React$Component3);
 
   function TimingSelector() {
@@ -579,8 +739,6 @@ var TimingSelector = (_class4 = function (_React$Component3) {
         return this.setState({ timing: dayOfWeek[0], dayNumber: 1 });
       }
 
-      console.log();
-
       isNaN(+timing) ? this.setState({ timing: timing, dayNumber: 1 }) : this.setState({ timing: 'number', dayNumber: timing });
     }
   }, {
@@ -590,7 +748,7 @@ var TimingSelector = (_class4 = function (_React$Component3) {
       var timing = _state3.timing;
       var dayNumber = _state3.dayNumber;
 
-      this.props.dayOfWeek.indexOf(timing) >= 0 ? this.props.onChange(timing) : this.props.onChange(dayNumber);
+      this.props.dayOfWeek.indexOf(timing) >= 0 ? this.dispatch('updateTiming', timing) : this.dispatch('updateTiming', dayNumber);
     }
   }, {
     key: 'changeRadio',
@@ -640,7 +798,7 @@ var TimingSelector = (_class4 = function (_React$Component3) {
   }, {
     key: 'days',
     get: function get() {
-      var _this7 = this;
+      var _this8 = this;
 
       var timing = this.state.timing;
 
@@ -652,7 +810,7 @@ var TimingSelector = (_class4 = function (_React$Component3) {
           React.createElement(
             'span',
             { className: 'input-input' },
-            React.createElement('input', { type: 'radio', value: day, checked: timing === day, onChange: _this7.changeRadio })
+            React.createElement('input', { type: 'radio', value: day, checked: timing === day, onChange: _this8.changeRadio })
           ),
           React.createElement(
             'span',
@@ -665,6 +823,6 @@ var TimingSelector = (_class4 = function (_React$Component3) {
   }]);
 
   return TimingSelector;
-}(React.Component), (_applyDecoratedDescriptor(_class4.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class4.prototype, 'inform'), _class4.prototype), _applyDecoratedDescriptor(_class4.prototype, 'changeRadio', [_decko.bind], Object.getOwnPropertyDescriptor(_class4.prototype, 'changeRadio'), _class4.prototype), _applyDecoratedDescriptor(_class4.prototype, 'changeDayNumber', [_decko.bind], Object.getOwnPropertyDescriptor(_class4.prototype, 'changeDayNumber'), _class4.prototype)), _class4);
+}(React.Component), (_applyDecoratedDescriptor(_class7.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class7.prototype, 'inform'), _class7.prototype), _applyDecoratedDescriptor(_class7.prototype, 'changeRadio', [_decko.bind], Object.getOwnPropertyDescriptor(_class7.prototype, 'changeRadio'), _class7.prototype), _applyDecoratedDescriptor(_class7.prototype, 'changeDayNumber', [_decko.bind], Object.getOwnPropertyDescriptor(_class7.prototype, 'changeDayNumber'), _class7.prototype)), _class7)) || _class6;
 
-},{"../../lib//api":2,"../../lib//api-configuration/report-group":1,"decko":4}]},{},[5]);
+},{"../../lib//api":2,"../../lib//api-configuration/report-group":1,"../../lib//components/fa":4,"../../lib/hub":5,"../../lib/models/condition":6,"decko":7}]},{},[8]);

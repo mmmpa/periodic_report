@@ -13,6 +13,9 @@
 .submit-button
   @extend .btn, .btn-success
 
+.submitting-button
+  @extend .btn, .btn-default, .disabled
+
 .move-button
   @extend .btn, .btn-default
 
@@ -23,6 +26,11 @@ input[type="radio"],
 input[type="checkbox"]
   width: 1.5em
   height: 1.5em
+
+button,
+a
+  .fa
+    margin-right: 0.25em
 
 label
   white-space: nowrap
@@ -58,9 +66,6 @@ label
 .form-section
   margin-bottom: 30px
 
-
-
-
 .markdown-body
   del,
   del *
@@ -86,19 +91,37 @@ label
   padding: 0
   margin: 0
   width: 100%
+  .move-button
+    width: 34px
+    padding: 0
+    line-height: 32px
+    &.up
+      border-radius: 3px 0 0 3px
+    &.down
+      border-radius: 0 3px 3px 0
+    .fa
+      margin: 0
+  li
+
   .report-item
     width: 100%
     list-style: none
     padding: 0
     margin: 0
     display: table-row
-    .control,
-    .input,
-    .delete
-      white-space: nowrap
-      vertical-align: middle
-      display: table-cell
-    .input
-      width: 100%
-    .delete
-      padding-left: 0.5em
+  .control,
+  .input,
+  .delete
+    white-space: nowrap
+    vertical-align: middle
+    display: table-cell
+    padding-bottom: 0.5em
+  .long-input
+    display: block
+    padding-bottom: 0.5em
+  .input
+    width: 100%
+  .delete
+    padding-left: 0.5em
+  .control
+    padding-right: 0.5em
