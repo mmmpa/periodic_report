@@ -1,6 +1,40 @@
 @import bootstrap.min
 @import gfm
 
+.create-button
+  @extend .btn, .btn-primary
+
+.delete-button
+  @extend .btn, .btn-danger
+
+.add-button
+  @extend .btn, .btn-primary
+
+.submit-button
+  @extend .btn, .btn-success
+
+.move-button
+  @extend .btn, .btn-default
+
+input[type="text"]
+  @extend .form-control
+
+input[type="radio"],
+input[type="checkbox"]
+  width: 1.5em
+  height: 1.5em
+
+label
+  white-space: nowrap
+  padding-right: 2em
+  cursor: pointer
+  .input-input,
+  .input-label
+    display: inline-block
+    vertical-align: middle
+  .input-label
+    padding-left: 0.5em
+
 .wrap
   @extend .container
 
@@ -19,6 +53,20 @@
 
   .input
 
+
+.column-row
+  @extend .row
+  overflow: hidden
+
+.column2
+  @extend .col-md-6
+
+.form-section
+  margin-bottom: 30px
+
+
+
+
 .markdown-body
   del,
   del *
@@ -29,3 +77,32 @@
     background-color: #cfc
     color: #0c0
     text-decoration: none
+
+.timing-selector
+  .day-number
+    display: block
+  .day-number-input
+    white-space: nowrap
+    input
+      text-align: right
+      display: inline-block
+      width: 4em
+
+.report-item-list
+  padding: 0
+  margin: 0
+  width: 100%
+  .report-item
+    width: 100%
+    list-style: none
+    padding: 0
+    margin: 0
+    display: table-row
+    .control,
+    .input,
+    .delete
+      white-space: nowrap
+      vertical-align: middle
+      display: table-cell
+    .input
+      width: 100%

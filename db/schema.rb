@@ -25,17 +25,18 @@ ActiveRecord::Schema.define(version: 20160918095304) do
   end
 
   create_table "report_groups", force: :cascade do |t|
-    t.string   "name"
-    t.string   "timing"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",       default: "", null: false
+    t.string   "timing",                  null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "report_items", force: :cascade do |t|
-    t.string   "name",            default: "", null: false
     t.integer  "report_group_id"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.string   "name",            default: "",    null: false
+    t.boolean  "root",            default: false, null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.index ["report_group_id"], name: "index_report_items_on_report_group_id", using: :btree
   end
 

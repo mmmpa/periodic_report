@@ -1,16 +1,12 @@
-div#editor data-day-of-week=ReportGroup::DAY_OF_WEEK.to_json
-= form_for report_group, method: detect_method do |f|
-  = report_group.errors.full_messages
-  .label timing
-  .input = f.text_field :timing
-  .label name
-  .input = f.text_field :name
-
-  = f.submit action_name
+div#editor(
+  data-day-of-week=ReportGroup::DAY_OF_WEEK.to_json
+  data-report-group=report_group.to_json
+)
 
 script src='/js/common.js'
 script src='/js/report-group-editor/index.js'
 javascript:
   var dom = document.querySelector('#editor')
-  var dayOfWeek = JSON.parse(dom.getAttribute('data-day-of-week'))
-  ReportGroupEditorRunner.run(dom, {dayOfWeek})
+  var params = JSON.parse(dom.getAttribute('data-report-group'))
+  params.dayOfWeek = JSON.parse(dom.getAttribute('data-day-of-week'))
+  ReportGroupEditorRunner.run(dom, params)

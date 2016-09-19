@@ -17,18 +17,18 @@ class ReportGroupsController < ApplicationController
 
   def create
     newer = ReportGroup.create!(report_group_params)
-    redirect_to edit_report_group_path(newer)
+    render json: newer, status: 200
   rescue ActiveRecord::RecordInvalid => e
     @report_group = e.record
-    render :new
+    render json: {errors: e.record.errors}, status: 400
   end
 
   def update
     report_group.update!(report_group_params)
-    redirect_to edit_report_group_path(report)
+    render json: report_group, status: 200
   rescue ActiveRecord::RecordInvalid => e
     @report_group = e.record
-    render :edit
+    render json: {errors: e.record.errors}, status: 400
   end
 
   def destroy
@@ -43,6 +43,6 @@ class ReportGroupsController < ApplicationController
   end
 
   def report_group_params
-    params.require(:report_group).permit(:name, :timing)
+    params.require(:report_group).permit(:name, :timing, items: [:name, :root, :id])
   end
 end

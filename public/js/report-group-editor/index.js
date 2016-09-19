@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _method = require('./method');
+var _method = require('../api/method');
 
 var _method2 = _interopRequireDefault(_method);
 
@@ -14,21 +14,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = {
   createReportGroup: {
     uri: '/report_groups',
-    method: _method2.default.Post
+    method: _method2.default.Post,
+    wrap: function wrap(p) {
+      return { report_group: p };
+    }
+  },
+  updateReportGroup: {
+    uri: '/report_groups/:id',
+    method: _method2.default.Put,
+    wrap: function wrap(p) {
+      return { report_group: p };
+    }
   }
 };
 
-},{"./method":3}],2:[function(require,module,exports){
+},{"../api/method":3}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.API = undefined;
+exports.registerAPI = registerAPI;
 exports.strike = strike;
-
-var _configuration = require('./configuration');
-
-var _configuration2 = _interopRequireDefault(_configuration);
 
 var _method = require('./method');
 
@@ -36,25 +44,23 @@ var _method2 = _interopRequireDefault(_method);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var API = {};
-exports.default = API;
+var API = exports.API = {};
 
-
-(function () {
+function registerAPI(configuration) {
   var _loop = function _loop(i) {
     API[i] = function () {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      return strike.apply(undefined, [_configuration2.default[i]].concat(args));
+      return strike.apply(undefined, [configuration[i]].concat(args));
     };
   };
 
-  for (var i in _configuration2.default) {
+  for (var i in configuration) {
     _loop(i);
   }
-})();
+}
 
 function strike(api) {
   var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
@@ -83,6 +89,7 @@ function build(api, params, options, resolve, reject) {
 
 
   makeBaseRequest(normalize(uri, params), method, options).send(wrap(params)).end(function (err, res) {
+    console.log(res);
     if (!!err) {
       if (!res.body || !res.body.errors) {
         reject({ errors: { unknown: [err] } });
@@ -135,7 +142,7 @@ function token() {
   }
 }
 
-},{"./configuration":1,"./method":3}],3:[function(require,module,exports){
+},{"./method":3}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -156,13 +163,15 @@ exports.default = {
 },{}],5:[function(require,module,exports){
 'use strict';
 
-var _desc, _value, _class2, _desc2, _value2, _class3;
+var _desc, _value, _class2, _desc2, _value2, _class3, _desc3, _value3, _class4;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _api = require('../../lib//api');
 
-var _api2 = _interopRequireDefault(_api);
+var _reportGroup = require('../../lib//api-configuration/report-group');
+
+var _reportGroup2 = _interopRequireDefault(_reportGroup);
 
 var _decko = require('decko');
 
@@ -203,6 +212,8 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+(0, _api.registerAPI)(_reportGroup2.default);
+
 window.ReportGroupEditorRunner = function () {
   function _class() {
     _classCallCheck(this, _class);
@@ -230,21 +241,57 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
   _createClass(ReportGroupEditor, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.setState({
-        name: '',
-        timing: '',
-        items: []
-      });
+      this.takeInState(this.props);
+    }
+  }, {
+    key: 'takeInState',
+    value: function takeInState(rawParams) {
+      var id = rawParams.id;
+      var name = rawParams.name;
+      var items = rawParams.report_items;
+      var timing = rawParams.timing;
+
+      this.setState({ id: id, name: name, items: items, timing: timing });
     }
   }, {
     key: 'changeTiming',
     value: function changeTiming(timing) {
-      console.log(timing);
       this.setState({ timing: timing });
+    }
+  }, {
+    key: 'changeItems',
+    value: function changeItems(items) {
+      this.setState({ items: items });
+    }
+  }, {
+    key: 'changeName',
+    value: function changeName(e) {
+      this.setState({ name: e.target.value });
+    }
+  }, {
+    key: 'submit',
+    value: function submit() {
+      var _this2 = this;
+
+      var _state = this.state;
+      var id = _state.id;
+      var name = _state.name;
+      var items = _state.items;
+      var timing = _state.timing;
+
+      this.sendTargetAPI({ id: id, name: name, items: items, timing: timing }).then(function (params) {
+        return _this2.takeInState(params);
+      }).catch(function (failure) {
+        return console.log('fail', failure);
+      });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _state2 = this.state;
+      var name = _state2.name;
+      var items = _state2.items;
+      var timing = _state2.timing;
       var dayOfWeek = this.props.dayOfWeek;
 
 
@@ -252,41 +299,232 @@ var ReportGroupEditor = (_class2 = function (_React$Component) {
         'div',
         { className: 'report-group-editor' },
         React.createElement(
-          'section',
-          { className: 'form-section' },
+          'div',
+          { className: 'column-row' },
           React.createElement(
-            'h1',
-            { className: 'form-label' },
-            'Report group name'
-          )
-        ),
-        React.createElement(
-          'section',
-          { className: 'form-section' },
-          React.createElement(
-            'h1',
-            { className: 'form-label' },
-            'Timing to put in a period'
+            'div',
+            { className: 'column2' },
+            React.createElement(
+              'section',
+              { className: 'form-section' },
+              React.createElement(
+                'h1',
+                { className: 'form-label' },
+                'Report group name'
+              ),
+              React.createElement('input', { type: 'text', value: name, placeholder: 'name required.', onChange: this.changeName })
+            ),
+            React.createElement(
+              'section',
+              { className: 'form-section' },
+              React.createElement(
+                'h1',
+                { className: 'form-label' },
+                'When put in a period'
+              ),
+              React.createElement(TimingSelector, { timing: timing, dayOfWeek: dayOfWeek, onChange: this.changeTiming })
+            )
           ),
-          React.createElement(TimingSelector, { dayOfWeek: dayOfWeek, onChange: this.changeTiming })
+          React.createElement(
+            'div',
+            { className: 'column2' },
+            React.createElement(
+              'section',
+              { className: 'form-section' },
+              React.createElement(
+                'h1',
+                { className: 'form-label' },
+                'Sections in a report'
+              ),
+              React.createElement(ItemList, { items: items, onChange: this.changeItems })
+            )
+          )
         ),
         React.createElement(
           'section',
-          { className: 'form-section' },
-          React.createElement(
-            'h1',
-            { className: 'form-label' },
-            'Items in a report'
-          )
+          { className: 'submit-section' },
+          this.submitButton
         )
+      );
+    }
+  }, {
+    key: 'sendTargetAPI',
+    get: function get() {
+      return this.state.id ? _api.API.updateReportGroup : _api.API.createReportGroup;
+    }
+  }, {
+    key: 'submitButton',
+    get: function get() {
+      return this.state.id ? React.createElement(
+        'button',
+        { className: 'submit-button', onClick: this.submit },
+        'update!'
+      ) : React.createElement(
+        'button',
+        { className: 'submit-button', onClick: this.submit },
+        'create!'
       );
     }
   }]);
 
   return ReportGroupEditor;
-}(React.Component), (_applyDecoratedDescriptor(_class2.prototype, 'changeTiming', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeTiming'), _class2.prototype)), _class2);
-var TimingSelector = (_class3 = function (_React$Component2) {
-  _inherits(TimingSelector, _React$Component2);
+}(React.Component), (_applyDecoratedDescriptor(_class2.prototype, 'changeTiming', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeTiming'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'changeItems', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeItems'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeName'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'submit'), _class2.prototype)), _class2);
+var ItemList = (_class3 = function (_React$Component2) {
+  _inherits(ItemList, _React$Component2);
+
+  function ItemList() {
+    _classCallCheck(this, ItemList);
+
+    return _possibleConstructorReturn(this, (ItemList.__proto__ || Object.getPrototypeOf(ItemList)).apply(this, arguments));
+  }
+
+  _createClass(ItemList, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.setState({ items: this.props.items.concat() });
+    }
+  }, {
+    key: 'detectDeleteButton',
+    value: function detectDeleteButton(id, root, index) {
+      var _this4 = this;
+
+      if (root) {
+        return React.createElement(
+          'span',
+          null,
+          'required.'
+        );
+      }
+
+      return id ? React.createElement(
+        'span',
+        null,
+        React.createElement('input', { type: 'checkbox', value: id, onChange: this.toggleItem }),
+        ' delete on saving'
+      ) : React.createElement(
+        'span',
+        null,
+        React.createElement(
+          'button',
+          { className: 'delete-button', onClick: function onClick() {
+              return _this4.deleteItem(index);
+            } },
+          'delete'
+        )
+      );
+    }
+  }, {
+    key: 'changeItem',
+    value: function changeItem(index, e) {
+      var items = this.state.items.concat();
+      items[index].name = e.target.value;
+      this.setState({ items: items });
+
+      this.props.onChange(items);
+    }
+  }, {
+    key: 'deleteItem',
+    value: function deleteItem(index) {
+      var items = this.state.items.concat();
+      items.splice(index, 1);
+      this.setState({ items: items });
+    }
+  }, {
+    key: 'addItem',
+    value: function addItem() {
+      var items = this.state.items.concat();
+
+      items.push({ id: '', name: '' });
+
+      this.setState({ items: items });
+    }
+  }, {
+    key: 'toggleItem',
+    value: function toggleItem(e) {}
+  }, {
+    key: 'itemMove',
+    value: function itemMove(index, direction) {}
+  }, {
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        { className: 'item-list' },
+        this.items,
+        React.createElement(
+          'button',
+          { 'class': 'add-button', onClick: this.addItem },
+          'add'
+        )
+      );
+    }
+  }, {
+    key: 'items',
+    get: function get() {
+      var _this5 = this;
+
+      var items = this.state.items;
+
+
+      if (items.length <= 1) {
+        return React.createElement(
+          'p',
+          null,
+          'not display title on just one item.'
+        );
+      }
+
+      return React.createElement(
+        'ul',
+        { className: 'report-item-list' },
+        items.map(function (_ref, index) {
+          var id = _ref.id;
+          var name = _ref.name;
+          var root = _ref.root;
+
+          return React.createElement(
+            'li',
+            { className: 'report-item' },
+            React.createElement(
+              'div',
+              { className: 'control' },
+              React.createElement(
+                'button',
+                { className: 'move-button', onClick: function onClick() {
+                    return _this5.itemMove(index, -1);
+                  } },
+                'up'
+              ),
+              React.createElement(
+                'button',
+                { className: 'move-button', onClick: function onClick() {
+                    return _this5.itemMove(index, +1);
+                  } },
+                'down'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'input' },
+              React.createElement('input', { type: 'text', className: 'report-item-name', value: name, onChange: function onChange(e) {
+                  return _this5.changeItem(index, e);
+                } })
+            ),
+            React.createElement(
+              'div',
+              { className: 'delete' },
+              _this5.detectDeleteButton(id, root, index)
+            )
+          );
+        })
+      );
+    }
+  }]);
+
+  return ItemList;
+}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'deleteItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'deleteItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'addItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'addItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'toggleItem', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'toggleItem'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'itemMove', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'itemMove'), _class3.prototype)), _class3);
+var TimingSelector = (_class4 = function (_React$Component3) {
+  _inherits(TimingSelector, _React$Component3);
 
   function TimingSelector() {
     _classCallCheck(this, TimingSelector);
@@ -297,17 +535,25 @@ var TimingSelector = (_class3 = function (_React$Component2) {
   _createClass(TimingSelector, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.setState({
-        timing: '',
-        dayNumber: 10
-      });
+      var _props = this.props;
+      var timing = _props.timing;
+      var dayOfWeek = _props.dayOfWeek;
+
+
+      if (!timing) {
+        return this.setState({ timing: dayOfWeek[0], dayNumber: 1 });
+      }
+
+      console.log();
+
+      isNaN(+timing) ? this.setState({ timing: timing, dayNumber: 1 }) : this.setState({ timing: 'number', dayNumber: timing });
     }
   }, {
     key: 'inform',
     value: function inform() {
-      var _state = this.state;
-      var timing = _state.timing;
-      var dayNumber = _state.dayNumber;
+      var _state3 = this.state;
+      var timing = _state3.timing;
+      var dayNumber = _state3.dayNumber;
 
       this.props.dayOfWeek.indexOf(timing) >= 0 ? this.props.onChange(timing) : this.props.onChange(dayNumber);
     }
@@ -328,9 +574,9 @@ var TimingSelector = (_class3 = function (_React$Component2) {
   }, {
     key: 'render',
     value: function render() {
-      var _state2 = this.state;
-      var timing = _state2.timing;
-      var dayNumber = _state2.dayNumber;
+      var _state4 = this.state;
+      var timing = _state4.timing;
+      var dayNumber = _state4.dayNumber;
 
 
       return React.createElement(
@@ -339,7 +585,7 @@ var TimingSelector = (_class3 = function (_React$Component2) {
         this.days,
         React.createElement(
           'label',
-          { key: 'dayNumber' },
+          { className: 'day-number', key: 'dayNumber' },
           React.createElement(
             'span',
             { className: 'input-input' },
@@ -348,10 +594,10 @@ var TimingSelector = (_class3 = function (_React$Component2) {
           ),
           React.createElement(
             'span',
-            { className: 'input-label' },
+            { className: 'input-label day-number-input' },
             React.createElement('input', { type: 'text', value: dayNumber, disabled: timing !== 'number',
               onChange: this.changeDayNumber }),
-            '日'
+            ' th of every month'
           )
         )
       );
@@ -359,7 +605,7 @@ var TimingSelector = (_class3 = function (_React$Component2) {
   }, {
     key: 'days',
     get: function get() {
-      var _this3 = this;
+      var _this7 = this;
 
       var timing = this.state.timing;
 
@@ -371,7 +617,7 @@ var TimingSelector = (_class3 = function (_React$Component2) {
           React.createElement(
             'span',
             { className: 'input-input' },
-            React.createElement('input', { type: 'radio', value: day, checked: timing === day, onChange: _this3.changeRadio })
+            React.createElement('input', { type: 'radio', value: day, checked: timing === day, onChange: _this7.changeRadio })
           ),
           React.createElement(
             'span',
@@ -384,6 +630,6 @@ var TimingSelector = (_class3 = function (_React$Component2) {
   }]);
 
   return TimingSelector;
-}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'inform'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'changeRadio', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeRadio'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'changeDayNumber', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeDayNumber'), _class3.prototype)), _class3);
+}(React.Component), (_applyDecoratedDescriptor(_class4.prototype, 'inform', [_decko.bind], Object.getOwnPropertyDescriptor(_class4.prototype, 'inform'), _class4.prototype), _applyDecoratedDescriptor(_class4.prototype, 'changeRadio', [_decko.bind], Object.getOwnPropertyDescriptor(_class4.prototype, 'changeRadio'), _class4.prototype), _applyDecoratedDescriptor(_class4.prototype, 'changeDayNumber', [_decko.bind], Object.getOwnPropertyDescriptor(_class4.prototype, 'changeDayNumber'), _class4.prototype)), _class4);
 
-},{"../../lib//api":2,"decko":4}]},{},[5]);
+},{"../../lib//api":2,"../../lib//api-configuration/report-group":1,"decko":4}]},{},[5]);

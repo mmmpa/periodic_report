@@ -1,8 +1,6 @@
 nav.navigation
   div.wrap
     ul.navigation-list
-      li = link_to 'レポートグループ', report_groups_path
-      li = link_to 'レポートグループ作成', new_report_group_path
+      li= link_to 'Periodic Reports Index', report_groups_path
       - if params[:report_group_id]
-        li = link_to 'レポート', reports_path
-        li = link_to 'レポート作成', new_report_path
+        li = link_to "Reports in #{report_group_name}", reports_path
