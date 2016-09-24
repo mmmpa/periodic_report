@@ -4,3 +4,14 @@
   .input = f.text_field :name
 
   = f.submit action_name
+
+div#editor(
+  data-report=report.to_json
+)
+
+script src='/js/common.js'
+script src='/js/report-editor/index.js'
+javascript:
+  var dom = document.querySelector('#editor')
+  var params = JSON.parse(dom.getAttribute('data-report'))
+  ReportEditorRunner.run(dom, params)

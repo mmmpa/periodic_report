@@ -14,6 +14,14 @@ class ReportPageChip < ApplicationRecord
     super
   end
 
+  def as_json(options = {})
+    super(
+      only: [:id, :raw, :html]
+    ).merge!(
+       name: report_item.name
+    )
+  end
+
   class CannotUpdate < StandardError
   end
 end

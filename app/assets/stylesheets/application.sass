@@ -1,6 +1,9 @@
 @import bootstrap.min
 @import gfm
 
+$header-height: 50px
+$large-margin: 40px
+
 .create-button
   @extend .btn, .btn-primary
 
@@ -53,7 +56,7 @@ label
     @extend .nav, .navbar-nav
 
 .content
-  padding-top: 50px
+  padding-top: $header-height + $large-margin
   @extend .container
 
 .column-row

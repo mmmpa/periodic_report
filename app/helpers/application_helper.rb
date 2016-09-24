@@ -15,6 +15,6 @@ module ApplicationHelper
   end
 
   def report_group_name
-    ReportGroup.find(params[:report_group_id]).name
+    @report_group_name ||= ReportGroup.find(params[:report_group_id]).name
   end
 end

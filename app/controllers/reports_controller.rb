@@ -1,6 +1,6 @@
 class ReportsController < ApplicationController
   def index
-    @reports = Report.all
+    @reports = report_group.reports
   end
 
   def show
@@ -8,7 +8,7 @@ class ReportsController < ApplicationController
   end
 
   def new
-    @report = Report.new
+    @report = report_group.reports.build
   end
 
   def edit
@@ -17,18 +17,18 @@ class ReportsController < ApplicationController
 
   def create
     newer = report_group.reports.create!(report_params)
-    redirect_to edit_report_path(report_id: newer.id)
+    render json: newer, status: 200
   rescue ActiveRecord::RecordInvalid => e
     @report = e.record
-    render :new
+    render json: {errors: e.record.errors}, status: 400
   end
 
   def update
     report.update!(report_params)
-    redirect_to edit_report_path(report_id: report.id)
+    render json: report, status: 200
   rescue ActiveRecord::RecordInvalid => e
     @report = e.record
-    render :edit
+    render json: {errors: e.record.errors}, status: 400
   end
 
   def destroy

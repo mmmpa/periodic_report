@@ -1,7 +1,8 @@
 class ReportPage < ApplicationRecord
   belongs_to :report, inverse_of: :report_pages
   has_many :report_page_chips, ->{order(report_item_id: :asc)}, inverse_of: :report_page
-  has_many :report_items, through: :report
+
+  after_initialize :initialize_state
 
   class << self
     def compare_and_create!(page, attributes)
@@ -16,6 +17,15 @@ class ReportPage < ApplicationRecord
       end
     end
   end
+
+  def initialize_state
+    if report_page_chips.empty?
+      report.report_items.each do |report_item|
+        report_page_chips.build(report_item: report_item)
+      end
+    end
+  end
+
 
   def ==(page)
     return false if page.nil?

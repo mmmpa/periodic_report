@@ -39,4 +39,13 @@ class Report < ApplicationRecord
   def diff_by_id(id = previous_body.id)
     diff(report_pages.find_by(id: id).try(:html))
   end
+
+  def as_json(options = {})
+    super(
+      methods: [:report_items],
+      only: [:id, :name, :report_group_id]
+    ).merge!(
+       sections: body.report_page_chips
+    )
+  end
 end
