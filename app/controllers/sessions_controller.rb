@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_filter :authorize_or_redirect, only: :callback
+
   def callback
     auth = request.env['omniauth.auth']
 
