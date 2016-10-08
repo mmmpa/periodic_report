@@ -261,13 +261,98 @@ var Condition = exports.Condition = {
 };
 
 },{}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _class;
+
+var _takeInParams = require('../../lib/utils/take-in-params');
+
+var _section = require('./section');
+
+var _section2 = _interopRequireDefault(_section);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Report = (0, _takeInParams.mixinTakeInParams)(_class = function Report() {
+  var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  var id = _ref.id;
+  var name = _ref.name;
+  var reportGroupId = _ref.report_group_id;
+  var timing = _ref.timing;
+  var report_items = _ref.report_items;
+  var sections = _ref.sections;
+
+  _classCallCheck(this, Report);
+
+  this.takeInParams({ id: id, name: name, reportGroupId: reportGroupId, timing: timing });
+  this.sections = sections.map(function (s) {
+    return new _section2.default(s);
+  });
+  console.log(this);
+}) || _class;
+
+exports.default = Report;
+
+},{"../../lib/utils/take-in-params":9,"./section":8}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _class;
+
+var _takeInParams = require('../../lib/utils/take-in-params');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Section = (0, _takeInParams.mixinTakeInParams)(_class = function Section() {
+  var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  var id = _ref.id;
+  var name = _ref.name;
+  var raw = _ref.raw;
+  var html = _ref.html;
+  var sectionId = _ref.section_id;
+
+  _classCallCheck(this, Section);
+
+  this.takeInParams({ id: id, name: name, raw: raw, html: html, sectionId: sectionId });
+}) || _class;
+
+exports.default = Section;
+
+},{"../../lib/utils/take-in-params":9}],9:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var mixinTakeInParams = exports.mixinTakeInParams = function mixinTakeInParams(klass) {
+  klass.prototype.takeInParams = function (params) {
+    for (var i in params) {
+      this[i] = params[i];
+    }
+  };
+};
+
+},{}],10:[function(require,module,exports){
 (function(global,factory){if(typeof define === 'function' && define.amd){define(['exports'],factory);}else if(typeof exports !== 'undefined'){factory(exports);}else {var mod={exports:{}};factory(mod.exports);global.decko = mod.exports;}})(this,function(exports){'use strict';exports.__esModule = true;var EMPTY={};var HOP=Object.prototype.hasOwnProperty;var fns={memoize:function memoize(fn){var opt=arguments.length <= 1 || arguments[1] === undefined?EMPTY:arguments[1];var cache=opt.cache || {};return function(){for(var _len=arguments.length,a=Array(_len),_key=0;_key < _len;_key++) {a[_key] = arguments[_key];}var k=String(a[0]);if(opt.caseSensitive === false)k = k.toLowerCase();return HOP.call(cache,k)?cache[k]:cache[k] = fn.apply(this,a);};},debounce:function debounce(fn,opts){if(typeof opts === 'function'){var p=fn;fn = opts;opts = p;}var delay=opts && opts.delay || opts || 0,args=undefined,context=undefined,timer=undefined;return function(){for(var _len2=arguments.length,a=Array(_len2),_key2=0;_key2 < _len2;_key2++) {a[_key2] = arguments[_key2];}args = a;context = this;if(!timer)timer = setTimeout(function(){fn.apply(context,args);args = context = timer = null;},delay);};},bind:function bind(target,key,_ref){var fn=_ref.value;return {configurable:true,get:function get(){var value=fn.bind(this);Object.defineProperty(this,key,{value:value,configurable:true,writable:true});return value;}};}};var memoize=multiMethod(fns.memoize),debounce=multiMethod(fns.debounce),bind=multiMethod(function(f,c){return f.bind(c);},function(){return fns.bind;});exports.memoize = memoize;exports.debounce = debounce;exports.bind = bind;exports['default'] = {memoize:memoize,debounce:debounce,bind:bind};function multiMethod(inner,deco){deco = deco || inner.decorate || decorator(inner);var d=deco();return function(){for(var _len3=arguments.length,args=Array(_len3),_key3=0;_key3 < _len3;_key3++) {args[_key3] = arguments[_key3];}var l=args.length;return (l < 2?deco:l > 2?d:inner).apply(undefined,args);};}function decorator(fn){return function(opt){return typeof opt === 'function'?fn(opt):function(target,key,desc){desc.value = fn(desc.value,opt,target,key,desc);};};}});
 
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
-var _class2, _desc, _value, _class3;
+var _class2, _desc, _value, _class3, _class4, _desc2, _value2, _class5;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -286,6 +371,10 @@ var _fa = require('../../lib//components/fa');
 var _fa2 = _interopRequireDefault(_fa);
 
 var _condition = require('../../lib/models/condition');
+
+var _report3 = require('../../lib/models/report');
+
+var _report4 = _interopRequireDefault(_report3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -359,13 +448,15 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
   }, {
     key: 'takeInState',
     value: function takeInState(rawParams) {
-      var id = rawParams.id;
-      var report_group_id = rawParams.report_group_id;
-      var name = rawParams.name;
-      var sections = rawParams.sections;
-      var timing = rawParams.timing;
+      var _ref = new _report4.default(rawParams);
 
-      this.setState({ id: id, report_group_id: report_group_id, name: name, sections: sections, timing: timing });
+      var reportId = _ref.id;
+      var reportGroupId = _ref.reportGroupId;
+      var name = _ref.name;
+      var sections = _ref.sections;
+      var timing = _ref.timing;
+
+      this.setState({ reportId: reportId, reportGroupId: reportGroupId, name: name, sections: sections, timing: timing });
     }
   }, {
     key: 'listen',
@@ -381,6 +472,22 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
       to('changeName', function (name) {
         return _this2.setState({ name: name });
       });
+
+      to('changeRaw', function () {
+        return _this2.changeSpecifySection.apply(_this2, arguments);
+      });
+    }
+  }, {
+    key: 'changeSpecifySection',
+    value: function changeSpecifySection(sectionId, raw) {
+      var sections = this.state.sections.map(function (s) {
+        if (s.sectionId === sectionId) {
+          s.raw = raw;
+        }
+        return s;
+      });
+
+      this.setState({ sections: sections });
     }
   }, {
     key: 'changeName',
@@ -395,12 +502,12 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
       this.setState({ condition: _condition.Condition.Submitting });
 
       var _state = this.state;
-      var id = _state.id;
-      var report_group_id = _state.report_group_id;
+      var report_id = _state.reportId;
+      var report_group_id = _state.reportGroupId;
       var name = _state.name;
       var items = _state.items;
 
-      this.sendTargetAPI({ id: id, report_group_id: report_group_id, name: name, items: items }).then(function (params) {
+      this.sendTargetAPI({ report_id: report_id, report_group_id: report_group_id, name: name, items: items }).then(function (params) {
         _this3.takeInState(params);
         _this3.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {
@@ -416,7 +523,7 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
   }, {
     key: 'isPersisted',
     get: function get() {
-      return !!this.state.id;
+      return !!this.state.reportId;
     }
   }, {
     key: 'sendTargetAPI',
@@ -476,7 +583,6 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
   }, {
     key: 'fulItemForm',
     get: function get() {
-      console.log(this.state);
       return React.createElement(
         'div',
         { className: 'full-report-form' },
@@ -484,8 +590,12 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
         React.createElement(
           'div',
           { className: 'report-editor' },
-          this.state.sections.map(function (section) {
-            return React.createElement(ReportSectionEditor, { section: section });
+          this.state.sections.map(function (_ref2) {
+            var name = _ref2.name;
+            var sectionId = _ref2.sectionId;
+            var raw = _ref2.raw;
+            var html = _ref2.html;
+            return React.createElement(ReportSectionEditor, { name: name, sectionId: sectionId, raw: raw, html: html });
           }),
           React.createElement(
             'section',
@@ -500,23 +610,51 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
   return ReportEditor;
 }(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeName'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'submit'), _class3.prototype)), _class3)) || _class2) || _class2;
 
-var ReportSectionEditor = function () {
+var ReportSectionEditor = (0, _hub.sender)(_class4 = (_class5 = function (_React$Component2) {
+  _inherits(ReportSectionEditor, _React$Component2);
+
   function ReportSectionEditor() {
     _classCallCheck(this, ReportSectionEditor);
+
+    return _possibleConstructorReturn(this, (ReportSectionEditor.__proto__ || Object.getPrototypeOf(ReportSectionEditor)).apply(this, arguments));
   }
 
   _createClass(ReportSectionEditor, [{
+    key: 'changeRaw',
+    value: function changeRaw(e) {
+      this.dispatch('changeRaw', this.props.sectionId, e.target.value);
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _props = this.props;
+      var name = _props.name;
+      var raw = _props.raw;
+      var html = _props.html;
+
       return React.createElement(
         'div',
         null,
-        'section'
+        React.createElement(
+          'h1',
+          null,
+          name
+        ),
+        React.createElement(
+          'textarea',
+          { onChange: this.changeRaw },
+          raw
+        ),
+        React.createElement(
+          'section',
+          null,
+          html
+        )
       );
     }
   }]);
 
   return ReportSectionEditor;
-}();
+}(React.Component), (_applyDecoratedDescriptor(_class5.prototype, 'changeRaw', [_decko.bind], Object.getOwnPropertyDescriptor(_class5.prototype, 'changeRaw'), _class5.prototype)), _class5)) || _class4;
 
-},{"../../lib//api":2,"../../lib//api-configuration/report":1,"../../lib//components/fa":4,"../../lib/hub":5,"../../lib/models/condition":6,"decko":7}]},{},[8]);
+},{"../../lib//api":2,"../../lib//api-configuration/report":1,"../../lib//components/fa":4,"../../lib/hub":5,"../../lib/models/condition":6,"../../lib/models/report":7,"decko":10}]},{},[11]);

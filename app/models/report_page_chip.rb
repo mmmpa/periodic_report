@@ -18,7 +18,8 @@ class ReportPageChip < ApplicationRecord
     super(
       only: [:id, :raw, :html]
     ).merge!(
-       name: report_item.name
+       name: report_item.name,
+       section_id: report_item.id
     )
   end
 
