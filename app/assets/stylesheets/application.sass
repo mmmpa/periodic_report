@@ -1,8 +1,18 @@
+@import codemirror
 @import bootstrap.min
 @import gfm
 
 $header-height: 50px
 $large-margin: 40px
+$editor-height: 600px
+
+.CodeMirror-gutters
+  border: 0
+  background: none
+  min-width: 40px
+
+.CodeMirror
+  height: auto
 
 .create-button
   @extend .btn, .btn-primary
@@ -128,3 +138,43 @@ label
     padding-left: 0.5em
   .control
     padding-right: 0.5em
+
+.report-edit-and-preview
+  border: 1px solid #ccc
+  overflow-y: scroll
+  max-height: $editor-height
+  .preview
+    @extend .markdown-body
+    padding: 20px
+  &.splat-mode
+    .editor,
+    .preview
+      width: 50%
+      float: left
+    .editor
+      border-right: 1px solid #ccc
+    .preview
+      margin-left: -1px
+      border-left: 1px solid #ccc
+  &.edit-mode
+    .editor
+      width: 50%
+    .preview
+      display: none
+  &.preview-mode
+    .preview
+      width: 50%
+    .editor
+      display: none
+
+.cm-wrapper
+  box-sizing: border-box
+  min-height: $editor-height / 3
+  position: relative
+  .cm-line
+    top: 0
+    left: 0
+    bottom: 0
+    position: absolute
+    width: 40px
+    background: #f0f0f0
