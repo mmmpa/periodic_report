@@ -468,7 +468,8 @@ var ReportGroupEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = 
         React.createElement(
           'section',
           { className: 'submit-section' },
-          this.submitButton
+          this.submitButton,
+          'aaa'
         )
       );
     }
