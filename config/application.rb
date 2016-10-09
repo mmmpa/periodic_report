@@ -17,7 +17,7 @@ module PeriodicReport
     config.i18n.default_locale = :en
 
     # config.autoload_paths += %W(#{config.root}/lib)
-    # config.autoload_paths += Dir["#{config.root}/lib/**/"]
+    config.autoload_paths += Dir["#{config.root}/app/**/"]
 
     Slim::Engine.set_options pretty: false
 

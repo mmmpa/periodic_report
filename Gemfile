@@ -37,6 +37,8 @@ group :default do
   gem 'metric_fu', require: false
   gem 'redcarpet'
   gem "pygments.rb"
+  gem 'active_model_serializers'
+  gem 'jb'
 end
 
 group :development, :test do

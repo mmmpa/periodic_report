@@ -1,16 +1,14 @@
 class ReportPagesController < ApplicationController
   def update
     report.update_body(report_page_params)
-    redirect_to edit_report_path(report)
+    render json: report, root: false, status: 200
   rescue ActiveRecord::RecordInvalid => e
-    @report = report
-    @report_body = e.record
-    render 'report/edit'
+    render json: {errors: e.record.errors}, status: 400
   end
 
   private
 
   def report_page_params
-    params.require(:report_page).permit(:raw)
+    params.require(:report_page).permit(report_items: [:raw])
   end
 end

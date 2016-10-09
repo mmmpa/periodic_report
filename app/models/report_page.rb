@@ -6,8 +6,10 @@ class ReportPage < ApplicationRecord
 
   class << self
     def compare_and_create!(page, attributes)
+      p attributes
       return create!(attributes) if page.nil?
 
+      p attributes
       new_page = new(attributes)
 
       if new_page == page

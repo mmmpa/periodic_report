@@ -13,17 +13,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   createReport: {
-    uri: '/report_groups/:report_group_id/reports',
+    uri: '/report_groups/:reportGroupId/reports',
     method: _method2.default.Post,
     wrap: function wrap(p) {
       return { report: p };
     }
   },
   updateReport: {
-    uri: '/report_groups/:report_group_id/reports/:report_id/report_page',
+    uri: '/report_groups/:reportGroupId/reports/:reportId/report_page',
     method: _method2.default.Put,
     wrap: function wrap(p) {
-      return { report: p };
+      p.report_items = p.sections;
+      return { report_page: p };
     }
   }
 };
@@ -88,10 +89,11 @@ function build(api, params, options, resolve, reject) {
   } : _api$parseError;
 
 
+  console.log(params);
   makeBaseRequest(normalize(uri, params), method, options).send(wrap(params)).end(function (err, res) {
-    console.log(res);
+    console.log(err, res);
     if (!!err) {
-      if (!res.body || !res.body.errors) {
+      if (!res || !res.body || !res.body.errors) {
         reject({ errors: { unknown: [err] } });
       } else {
         reject(parseError(res.body));
@@ -103,8 +105,8 @@ function build(api, params, options, resolve, reject) {
 }
 
 function normalize(uri, params) {
-  return uri.replace(/:([a-z_]+)/ig, function (_, n) {
-    return params[n];
+  return uri.replace(/:([a-zA-Z_]+)/ig, function (_, n) {
+    return console.log(n), params[n];
   });
 }
 
@@ -15627,17 +15629,37 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
       this.setState({ condition: _condition.Condition.Submitting });
 
       var _state = this.state;
-      var report_id = _state.reportId;
-      var report_group_id = _state.reportGroupId;
-      var name = _state.name;
-      var items = _state.items;
+      var reportId = _state.reportId;
+      var reportGroupId = _state.reportGroupId;
+      var sections = _state.sections;
 
-      this.sendTargetAPI({ report_id: report_id, report_group_id: report_group_id, name: name, items: items }).then(function (params) {
+      this.sendTargetAPI({ reportId: reportId, reportGroupId: reportGroupId, sections: sections }).then(function (params) {
         _this3.takeInState(params);
         _this3.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {
         console.log('fail', failure);
         _this3.setState({ condition: _condition.Condition.Waiting });
+      });
+    }
+  }, {
+    key: 'updateReport',
+    value: function updateReport() {
+      var _this4 = this;
+
+      this.setState({ condition: _condition.Condition.Submitting });
+
+      var _state2 = this.state;
+      var reportId = _state2.reportId;
+      var reportGroupId = _state2.reportGroupId;
+      var name = _state2.name;
+      var items = _state2.items;
+
+      _api.API.updateReport({ reportId: reportId, reportGroupId: reportGroupId, name: name, items: items }).then(function (params) {
+        _this4.takeInState(params);
+        _this4.setState({ condition: _condition.Condition.Waiting });
+      }).catch(function (failure) {
+        console.log('fail', failure);
+        _this4.setState({ condition: _condition.Condition.Waiting });
       });
     }
   }, {
@@ -15697,11 +15719,6 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
             'Report name'
           ),
           React.createElement('input', { type: 'text', value: name, placeholder: 'name required.', onChange: this.changeName })
-        ),
-        React.createElement(
-          'section',
-          { className: 'submit-section' },
-          this.submitButton
         )
       );
     }
@@ -15733,7 +15750,7 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
   }]);
 
   return ReportEditor;
-}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeName'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'submit'), _class3.prototype)), _class3)) || _class2) || _class2;
+}(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeName'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'submit'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'updateReport', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'updateReport'), _class3.prototype)), _class3)) || _class2) || _class2;
 
 var ReportSectionEditor = (0, _hub.sender)(_class4 = (_class5 = function (_React$Component2) {
   _inherits(ReportSectionEditor, _React$Component2);
@@ -15764,16 +15781,10 @@ var ReportSectionEditor = (0, _hub.sender)(_class4 = (_class5 = function (_React
   }, {
     key: 'render',
     value: function render() {
-      var name = this.props.name;
-
       return React.createElement(
         'div',
         null,
-        React.createElement(
-          'h1',
-          null,
-          name
-        ),
+        this.name,
         React.createElement(
           'label',
           null,
@@ -15786,6 +15797,18 @@ var ReportSectionEditor = (0, _hub.sender)(_class4 = (_class5 = function (_React
           this.content
         )
       );
+    }
+  }, {
+    key: 'name',
+    get: function get() {
+      var name = this.props.name;
+
+
+      return name ? React.createElement(
+        'h1',
+        null,
+        name
+      ) : null;
     }
   }, {
     key: 'content',

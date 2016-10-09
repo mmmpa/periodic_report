@@ -88,10 +88,11 @@ function build(api, params, options, resolve, reject) {
   } : _api$parseError;
 
 
+  console.log(params);
   makeBaseRequest(normalize(uri, params), method, options).send(wrap(params)).end(function (err, res) {
-    console.log(res);
+    console.log(err, res);
     if (!!err) {
-      if (!res.body || !res.body.errors) {
+      if (!res || !res.body || !res.body.errors) {
         reject({ errors: { unknown: [err] } });
       } else {
         reject(parseError(res.body));
@@ -103,8 +104,8 @@ function build(api, params, options, resolve, reject) {
 }
 
 function normalize(uri, params) {
-  return uri.replace(/:([a-z_]+)/ig, function (_, n) {
-    return params[n];
+  return uri.replace(/:([a-zA-Z_]+)/ig, function (_, n) {
+    return console.log(n), params[n];
   });
 }
 

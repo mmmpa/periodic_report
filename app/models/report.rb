@@ -18,6 +18,8 @@ class Report < ApplicationRecord
 
   def update_body(attributes)
     ReportPage.compare_and_create!(body, {report: self}.merge!(attributes))
+    save!
+    self
   end
 
   def body
