@@ -19,11 +19,14 @@ class ReportPage < ApplicationRecord
 
   attr_accessor :sections
 
+  after_initialize :initialize_state
+
   class << self
     def compare_and_create!(page, attributes)
       return create!(attributes) if page.nil?
 
       new_page = new(attributes)
+      new_page.report_sections = []
       attributes.delete(:sections).map do |section|
         report_section_configuration_id = section.delete(:section_id)
         new_page.report_section_configurations.find(report_section_configuration_id)
@@ -34,6 +37,14 @@ class ReportPage < ApplicationRecord
         page
       else
         new_page.tap { |n| n.save! }
+      end
+    end
+  end
+
+  def initialize_state
+    if report && report_sections.empty?
+      report.report_section_configurations.each do |report_section_configuration|
+        report_sections.build(report_section_configuration: report_section_configuration)
       end
     end
   end

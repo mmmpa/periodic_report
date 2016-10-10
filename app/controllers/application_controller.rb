@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   end
 
   def report
-    report_configuration.reports.find(params[:report_id])
+    @stored_report ||= report_configuration.reports.find(params[:report_id])
   end
 
   def report_configuration

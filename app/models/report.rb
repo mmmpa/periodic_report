@@ -35,7 +35,7 @@ class Report < ApplicationRecord
   end
 
   def update_body(attributes)
-    ReportPage.compare_and_create!(body, {report: self}.merge!(attributes))
+    ReportPage.compare_and_create!(body, {report: self}.merge!(attributes).deep_symbolize_keys!)
     self
   end
 

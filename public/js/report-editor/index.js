@@ -23,7 +23,11 @@ exports.default = {
     uri: '/report_configurations/:reportConfigurationId/reports/:reportId/report_page',
     method: _method2.default.Put,
     wrap: function wrap(p) {
-      p.report_section_configurations = p.sections;
+      p.sections = p.sections.map(function (_ref) {
+        var section_id = _ref.sectionId;
+        var raw = _ref.raw;
+        return { section_id: section_id, raw: raw };
+      });
       return { report_page: p };
     }
   }
@@ -15629,11 +15633,12 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
       this.setState({ condition: _condition.Condition.Submitting });
 
       var _state = this.state;
+      var name = _state.name;
       var reportId = _state.reportId;
       var reportConfigurationId = _state.reportConfigurationId;
       var sections = _state.sections;
 
-      this.sendTargetAPI({ reportId: reportId, reportConfigurationId: reportConfigurationId, sections: sections }).then(function (params) {
+      this.sendTargetAPI({ name: name, reportId: reportId, reportConfigurationId: reportConfigurationId, sections: sections }).then(function (params) {
         _this3.takeInState(params);
         _this3.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {
@@ -15718,7 +15723,12 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
             { className: 'form-label' },
             'Report name'
           ),
-          React.createElement('input', { type: 'text', value: name, placeholder: 'name required.', onChange: this.changeName })
+          React.createElement('input', { type: 'text', value: name, placeholder: 'name required.', onChange: this.changeName }),
+          React.createElement(
+            'section',
+            { className: 'submit-section' },
+            this.submitButton
+          )
         )
       );
     }

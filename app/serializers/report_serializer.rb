@@ -16,6 +16,10 @@
 #
 
 class ReportSerializer < ActiveModel::Serializer
-  attributes :id, :name, :report_configuration_id
-  has_many :periodic_report_pages
+  attributes :id, :name, :sections
+  has_many :sections
+
+  def sections
+    object.body.report_sections
+  end
 end
