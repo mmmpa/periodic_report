@@ -1,5 +1,5 @@
-div = link_to 'Create new Periodic Report Setting', new_report_group_path, class: 'create-button'
+div = link_to 'Create new Periodic Report Setting', new_report_configuration_path, class: 'create-button'
 ul
-  - @report_groups.each do |report_group|
+  - @report_configurations.each do |report_configuration|
     li
-      = link_to report_group.name, edit_report_group_path(report_group)
+      = link_to report_configuration.name, edit_report_configuration_path(report_configuration)

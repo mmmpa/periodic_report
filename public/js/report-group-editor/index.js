@@ -12,18 +12,18 @@ var _method2 = _interopRequireDefault(_method);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-  createReportGroup: {
-    uri: '/report_groups',
+  createReportConfiguration: {
+    uri: '/report_configurations',
     method: _method2.default.Post,
     wrap: function wrap(p) {
-      return { report_group: p };
+      return { report_configuration: p };
     }
   },
-  updateReportGroup: {
-    uri: '/report_groups/:id',
+  updateReportConfiguration: {
+    uri: '/report_configurations/:id',
     method: _method2.default.Put,
     wrap: function wrap(p) {
-      return { report_group: p };
+      return { report_configuration: p };
     }
   }
 };
@@ -327,7 +327,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 (0, _api.registerAPI)(_reportGroup2.default);
 
-window.ReportGroupEditorRunner = function () {
+window.ReportConfigurationEditorRunner = function () {
   function _class() {
     _classCallCheck(this, _class);
   }
@@ -335,23 +335,23 @@ window.ReportGroupEditorRunner = function () {
   _createClass(_class, null, [{
     key: 'run',
     value: function run(dom, params) {
-      ReactDOM.render(React.createElement(ReportGroupEditor, params), dom);
+      ReactDOM.render(React.createElement(ReportConfigurationEditor, params), dom);
     }
   }]);
 
   return _class;
 }();
 
-var ReportGroupEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_class3 = function (_React$Component) {
-  _inherits(ReportGroupEditor, _React$Component);
+var ReportConfigurationEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_class3 = function (_React$Component) {
+  _inherits(ReportConfigurationEditor, _React$Component);
 
-  function ReportGroupEditor() {
-    _classCallCheck(this, ReportGroupEditor);
+  function ReportConfigurationEditor() {
+    _classCallCheck(this, ReportConfigurationEditor);
 
-    return _possibleConstructorReturn(this, (ReportGroupEditor.__proto__ || Object.getPrototypeOf(ReportGroupEditor)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ReportConfigurationEditor.__proto__ || Object.getPrototypeOf(ReportConfigurationEditor)).apply(this, arguments));
   }
 
-  _createClass(ReportGroupEditor, [{
+  _createClass(ReportConfigurationEditor, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       this.takeInState(this.props);
@@ -362,7 +362,7 @@ var ReportGroupEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = 
     value: function takeInState(rawParams) {
       var id = rawParams.id;
       var name = rawParams.name;
-      var items = rawParams.report_items;
+      var items = rawParams.report_section_configurations;
       var timing = rawParams.timing;
 
       this.setState({ id: id, name: name, items: items, timing: timing });
@@ -476,7 +476,7 @@ var ReportGroupEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = 
   }, {
     key: 'sendTargetAPI',
     get: function get() {
-      return this.state.id ? _api.API.updateReportGroup : _api.API.createReportGroup;
+      return this.state.id ? _api.API.updateReportConfiguration : _api.API.createReportConfiguration;
     }
   }, {
     key: 'submitButton',
@@ -504,7 +504,7 @@ var ReportGroupEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = 
     }
   }]);
 
-  return ReportGroupEditor;
+  return ReportConfigurationEditor;
 }(React.Component), (_applyDecoratedDescriptor(_class3.prototype, 'changeName', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'changeName'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'submit', [_decko.bind], Object.getOwnPropertyDescriptor(_class3.prototype, 'submit'), _class3.prototype)), _class3)) || _class2) || _class2;
 
 var ItemList = (0, _hub.sender)(_class4 = (_class5 = function (_React$Component2) {

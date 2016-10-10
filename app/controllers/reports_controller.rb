@@ -1,6 +1,6 @@
 class ReportsController < ApplicationController
   def index
-    @reports = report_group.reports
+    @reports = report_configuration.reports
   end
 
   def show
@@ -8,7 +8,7 @@ class ReportsController < ApplicationController
   end
 
   def new
-    @report = report_group.reports.build
+    @report = report_configuration.reports.build
   end
 
   def edit
@@ -16,7 +16,7 @@ class ReportsController < ApplicationController
   end
 
   def create
-    newer = report_group.reports.create!(report_params)
+    newer = report_configuration.reports.create!(report_params)
     render json: newer, status: 200
   rescue ActiveRecord::RecordInvalid => e
     @report = e.record

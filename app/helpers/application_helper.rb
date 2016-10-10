@@ -14,7 +14,7 @@ module ApplicationHelper
     detect_method == :post ? reports_path : report_path(record)
   end
 
-  def report_group_name
-    @report_group_name ||= ReportGroup.find(params[:report_group_id]).name
+  def report_configuration_name
+    @report_configuration_name ||= ReportConfiguration.find(params[:report_configuration_id]).name
   end
 end

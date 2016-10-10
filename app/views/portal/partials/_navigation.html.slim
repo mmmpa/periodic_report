@@ -1,6 +1,6 @@
 nav.navigation
   div.wrap
     ul.navigation-list
-      li= link_to 'Periodic Reports Index', report_groups_path
-      - if params[:report_group_id]
-        li = link_to "Reports in #{report_group_name}", reports_path
+      li= link_to 'Periodic Reports Index', report_configurations_path
+      - if params[:report_configuration_id]
+        li = link_to "Reports in #{report_configuration_name}", reports_path

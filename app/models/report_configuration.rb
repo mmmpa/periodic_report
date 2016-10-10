@@ -1,10 +1,21 @@
-class ReportGroup < ApplicationRecord
+# == Schema Information
+#
+# Table name: report_configurations
+#
+#  id         :integer          not null, primary key
+#  name       :string           default(""), not null
+#  timing     :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+class ReportConfiguration < ApplicationRecord
   DAY_OF_WEEK = [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday]
 
   attr_accessor :items
 
-  has_many :reports, inverse_of: :report_group
-  has_many :report_items, inverse_of: :report_group
+  has_many :reports, inverse_of: :report_configuration
+  has_many :report_section_configurations, inverse_of: :report_configuration
 
   validates :name, presence: true
   validate :validate_timing
@@ -15,17 +26,18 @@ class ReportGroup < ApplicationRecord
   def initialize_state
     self.name ||= ''
     self.timing ||= DAY_OF_WEEK.first
-    report_items.build(root: true) if report_items.empty?
+    report_section_configurations.build(root: true) if report_section_configurations.empty?
   end
 
   def insert_items
+    return true if items.nil?
     root = nil
-    now_items = report_items.all
-    new_items = (items || []).map do |params|
+    now_items = report_section_configurations.to_a
+    new_items =items.map do |params|
       item = if params[:id].present?
                now_items.find { |i| i.id == params[:id] }
              else
-               report_items.build
+               report_section_configurations.build
              end
       root = true if params[:root].present?
       item.assign_attributes(params)
@@ -34,9 +46,9 @@ class ReportGroup < ApplicationRecord
     end
 
     if root
-      self.report_items = new_items
+      self.report_section_configurations = new_items
     else
-      errors.add(:report_items, :root_required)
+      errors.add(:report_section_configurations, :root_required)
     end
   end
 
@@ -59,7 +71,7 @@ class ReportGroup < ApplicationRecord
       name: name,
       timing: timing,
       # for not saved records, not use association methods like select.
-      report_items: report_items.map { |i| {id: i.id, name: i.name, root: i.root} }
+      report_section_configurations: report_section_configurations.map { |i| {id: i.id, name: i.name, root: i.root} }
     }
   end
 end

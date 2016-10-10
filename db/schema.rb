@@ -24,31 +24,11 @@ ActiveRecord::Schema.define(version: 20160918095304) do
     t.index ["report_page_id"], name: "index_periods_on_report_page_id", using: :btree
   end
 
-  create_table "report_groups", force: :cascade do |t|
+  create_table "report_configurations", force: :cascade do |t|
     t.string   "name",       default: "", null: false
     t.string   "timing",                  null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
-  end
-
-  create_table "report_items", force: :cascade do |t|
-    t.integer  "report_group_id"
-    t.string   "name",            default: "",    null: false
-    t.boolean  "root",            default: false, null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.index ["report_group_id"], name: "index_report_items_on_report_group_id", using: :btree
-  end
-
-  create_table "report_page_chips", force: :cascade do |t|
-    t.integer  "report_page_id"
-    t.integer  "report_item_id"
-    t.text     "raw",            default: "", null: false
-    t.text     "html",           default: "", null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.index ["report_item_id"], name: "index_report_page_chips_on_report_item_id", using: :btree
-    t.index ["report_page_id"], name: "index_report_page_chips_on_report_page_id", using: :btree
   end
 
   create_table "report_pages", force: :cascade do |t|
@@ -58,13 +38,33 @@ ActiveRecord::Schema.define(version: 20160918095304) do
     t.index ["report_id"], name: "index_report_pages_on_report_id", using: :btree
   end
 
+  create_table "report_section_configurations", force: :cascade do |t|
+    t.integer  "report_configuration_id"
+    t.string   "name",                    default: "",    null: false
+    t.boolean  "root",                    default: false, null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.index ["report_configuration_id"], name: "index_report_section_configurations_on_report_configuration_id", using: :btree
+  end
+
+  create_table "report_sections", force: :cascade do |t|
+    t.integer  "report_page_id"
+    t.integer  "report_section_configuration_id"
+    t.text     "raw",                             default: "", null: false
+    t.text     "html",                            default: "", null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.index ["report_page_id"], name: "index_report_sections_on_report_page_id", using: :btree
+    t.index ["report_section_configuration_id"], name: "index_report_sections_on_report_section_configuration_id", using: :btree
+  end
+
   create_table "reports", force: :cascade do |t|
     t.integer  "user_id"
-    t.integer  "report_group_id"
-    t.string   "name",            default: "", null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.index ["report_group_id"], name: "index_reports_on_report_group_id", using: :btree
+    t.integer  "report_configuration_id"
+    t.string   "name",                    default: "", null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.index ["report_configuration_id"], name: "index_reports_on_report_configuration_id", using: :btree
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 

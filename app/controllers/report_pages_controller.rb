@@ -9,6 +9,6 @@ class ReportPagesController < ApplicationController
   private
 
   def report_page_params
-    params.require(:report_page).permit(report_items: [:raw])
+    params.require(:report_page).permit(report_section_configurations: [:raw])
   end
 end

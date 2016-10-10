@@ -13,17 +13,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   createReport: {
-    uri: '/report_groups/:reportGroupId/reports',
+    uri: '/report_configurations/:reportConfigurationId/reports',
     method: _method2.default.Post,
     wrap: function wrap(p) {
       return { report: p };
     }
   },
   updateReport: {
-    uri: '/report_groups/:reportGroupId/reports/:reportId/report_page',
+    uri: '/report_configurations/:reportConfigurationId/reports/:reportId/report_page',
     method: _method2.default.Put,
     wrap: function wrap(p) {
-      p.report_items = p.sections;
+      p.report_section_configurations = p.sections;
       return { report_page: p };
     }
   }
@@ -419,10 +419,10 @@ var Report = (0, _takeInParams.mixinTakeInParams)(_class = function Report() {
 
   var id = _toCamel.id;
   var name = _toCamel.name;
-  var reportGroupId = _toCamel.reportGroupId;
+  var reportConfigurationId = _toCamel.reportConfigurationId;
   var sections = _toCamel.sections;
 
-  this.takeInParams({ id: id, name: name, reportGroupId: reportGroupId });
+  this.takeInParams({ id: id, name: name, reportConfigurationId: reportConfigurationId });
   this.sections = sections.map(function (s) {
     return new _section2.default(s);
   });
@@ -15578,12 +15578,12 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
       var _ref = new _report4.default(rawParams);
 
       var reportId = _ref.id;
-      var reportGroupId = _ref.reportGroupId;
+      var reportConfigurationId = _ref.reportConfigurationId;
       var name = _ref.name;
       var sections = _ref.sections;
       var timing = _ref.timing;
 
-      this.setState({ reportId: reportId, reportGroupId: reportGroupId, name: name, sections: sections, timing: timing });
+      this.setState({ reportId: reportId, reportConfigurationId: reportConfigurationId, name: name, sections: sections, timing: timing });
     }
   }, {
     key: 'listen',
@@ -15630,10 +15630,10 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
 
       var _state = this.state;
       var reportId = _state.reportId;
-      var reportGroupId = _state.reportGroupId;
+      var reportConfigurationId = _state.reportConfigurationId;
       var sections = _state.sections;
 
-      this.sendTargetAPI({ reportId: reportId, reportGroupId: reportGroupId, sections: sections }).then(function (params) {
+      this.sendTargetAPI({ reportId: reportId, reportConfigurationId: reportConfigurationId, sections: sections }).then(function (params) {
         _this3.takeInState(params);
         _this3.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {
@@ -15650,11 +15650,11 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
 
       var _state2 = this.state;
       var reportId = _state2.reportId;
-      var reportGroupId = _state2.reportGroupId;
+      var reportConfigurationId = _state2.reportConfigurationId;
       var name = _state2.name;
       var items = _state2.items;
 
-      _api.API.updateReport({ reportId: reportId, reportGroupId: reportGroupId, name: name, items: items }).then(function (params) {
+      _api.API.updateReport({ reportId: reportId, reportConfigurationId: reportConfigurationId, name: name, items: items }).then(function (params) {
         _this4.takeInState(params);
         _this4.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {

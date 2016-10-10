@@ -13,14 +13,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   createReport: {
-    uri: '/report_groups/:report_group_id/reports',
+    uri: '/report_configurations/:report_configuration_id/reports',
     method: _method2.default.Post,
     wrap: function wrap(p) {
       return { report: p };
     }
   },
   updateReport: {
-    uri: '/report_groups/:report_group_id/reports/:report_id/report_page',
+    uri: '/report_configurations/:report_configuration_id/reports/:report_id/report_page',
     method: _method2.default.Put,
     wrap: function wrap(p) {
       return { report: p };
@@ -291,10 +291,10 @@ var Report = (0, _takeInParams.mixinTakeInParams)(_class = function Report() {
 
   var id = _toCamel.id;
   var name = _toCamel.name;
-  var reportGroupId = _toCamel.reportGroupId;
+  var reportConfigurationId = _toCamel.reportConfigurationId;
   var sections = _toCamel.sections;
 
-  this.takeInParams({ id: id, name: name, reportGroupId: reportGroupId });
+  this.takeInParams({ id: id, name: name, reportConfigurationId: reportConfigurationId });
   this.sections = sections.map(function (s) {
     return new _section2.default(s);
   });
@@ -917,12 +917,12 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
       var _ref = new _report4.default(rawParams);
 
       var reportId = _ref.id;
-      var reportGroupId = _ref.reportGroupId;
+      var reportConfigurationId = _ref.reportConfigurationId;
       var name = _ref.name;
       var sections = _ref.sections;
       var timing = _ref.timing;
 
-      this.setState({ reportId: reportId, reportGroupId: reportGroupId, name: name, sections: sections, timing: timing });
+      this.setState({ reportId: reportId, reportConfigurationId: reportConfigurationId, name: name, sections: sections, timing: timing });
     }
   }, {
     key: 'listen',
@@ -969,11 +969,11 @@ var ReportEditor = (0, _hub.receiver)(_class2 = (0, _hub.sender)(_class2 = (_cla
 
       var _state = this.state;
       var report_id = _state.reportId;
-      var report_group_id = _state.reportGroupId;
+      var report_configuration_id = _state.reportConfigurationId;
       var name = _state.name;
       var items = _state.items;
 
-      this.sendTargetAPI({ report_id: report_id, report_group_id: report_group_id, name: name, items: items }).then(function (params) {
+      this.sendTargetAPI({ report_id: report_id, report_configuration_id: report_configuration_id, name: name, items: items }).then(function (params) {
         _this3.takeInState(params);
         _this3.setState({ condition: _condition.Condition.Waiting });
       }).catch(function (failure) {

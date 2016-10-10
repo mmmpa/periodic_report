@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get 'portal' => 'portal#index'
 
-  resources :report_groups, param: :report_group_id, except: :show do
+  resources :report_configurations, param: :report_configuration_id, except: :show do
     member do
       resources :reports, param: :report_id do
         member do

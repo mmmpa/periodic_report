@@ -1,6 +1,6 @@
 div#editor(
-  data-day-of-week=ReportGroup::DAY_OF_WEEK.to_json
-  data-report-group=report_group.to_json
+  data-day-of-week=ReportConfiguration::DAY_OF_WEEK.to_json
+  data-report-group=report_configuration.to_json
 )
 
 script src='/js/common.js'
@@ -9,4 +9,4 @@ javascript:
   var dom = document.querySelector('#editor')
   var params = JSON.parse(dom.getAttribute('data-report-group'))
   params.dayOfWeek = JSON.parse(dom.getAttribute('data-day-of-week'))
-  ReportGroupEditorRunner.run(dom, params)
+  ReportConfigurationEditorRunner.run(dom, params)

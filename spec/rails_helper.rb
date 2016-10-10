@@ -68,6 +68,9 @@ RSpec.configure do |config|
     FactoryGirl.factories.clear
     FactoryGirl.sequences.clear
     FactoryGirl.find_definitions
+
+    create(:report_configuration)
+    create(:report)
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

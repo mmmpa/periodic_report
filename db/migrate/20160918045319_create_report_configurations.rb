@@ -1,6 +1,6 @@
-class CreateReportGroups < ActiveRecord::Migration[5.0]
+class CreateReportConfigurations < ActiveRecord::Migration[5.0]
   def change
-    create_table :report_groups do |t|
+    create_table :report_configurations do |t|
       t.string :name, default: '', null: false
       t.string :timing, null: false
 
